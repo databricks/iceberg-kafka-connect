@@ -100,7 +100,7 @@ public class CommitterImpl extends Channel implements Committer, AutoCloseable {
 
     consumeAvailable(
         // initial poll with longer duration so the consumer will initialize...
-        Duration.ofMillis(1000),
+        Duration.ofMillis(INITIAL_CONNECTION_TIMEOUT_MS),
         envelope ->
             receive(
                 envelope,
