@@ -47,7 +47,7 @@ public class IcebergWriterFactory {
   }
 
   public RecordWriter createWriter(
-      String tableName, SinkRecord sample, boolean ignoreMissingTable) {
+          String tableName, SinkRecord sample, boolean ignoreMissingTable) {
     TableIdentifier identifier = TableIdentifier.parse(tableName);
     Table table;
     try {
@@ -67,47 +67,52 @@ public class IcebergWriterFactory {
 
   @VisibleForTesting
   Table autoCreateTable(String tableName, SinkRecord sample) {
-    StructType structType;
-    if (sample.valueSchema() == null) {
-      structType =
-          SchemaUtils.inferIcebergType(sample.value(), config)
-              .orElseThrow(() -> new DataException("Unable to create table from empty object"))
-              .asStructType();
-    } else {
-      structType = SchemaUtils.toIcebergType(sample.valueSchema(), config).asStructType();
-    }
-
-    org.apache.iceberg.Schema schema = new org.apache.iceberg.Schema(structType.fields());
-    TableIdentifier identifier = TableIdentifier.parse(tableName);
-
-    List<String> partitionBy = config.tableConfig(tableName).partitionBy();
-    PartitionSpec spec;
     try {
-      spec = SchemaUtils.createPartitionSpec(schema, partitionBy);
-    } catch (Exception e) {
-      LOG.error(
-          "Unable to create partition spec {}, table {} will be unpartitioned",
-          partitionBy,
-          identifier,
-          e);
-      spec = PartitionSpec.unpartitioned();
-    }
+      StructType structType;
+      if (sample.valueSchema() == null) {
+        structType =
+                SchemaUtils.inferIcebergType(sample.value(), config)
+                        .orElseThrow(() -> new DataException("Unable to create table from empty object"))
+                        .asStructType();
+      } else {
+        structType = SchemaUtils.toIcebergType(sample.valueSchema(), config).asStructType();
+      }
 
-    PartitionSpec partitionSpec = spec;
-    AtomicReference<Table> result = new AtomicReference<>();
-    Tasks.range(1)
-        .retry(IcebergSinkConfig.CREATE_TABLE_RETRIES)
-        .run(
-            notUsed -> {
-              try {
-                result.set(catalog.loadTable(identifier));
-              } catch (NoSuchTableException e) {
-                result.set(
-                    catalog.createTable(
-                        identifier, schema, partitionSpec, config.autoCreateProps()));
-                LOG.info("Created new table {} from record at topic: {}, partition: {}, offset: {}", identifier, sample.topic(), sample.kafkaPartition(), sample.kafkaOffset());
-              }
-            });
-    return result.get();
+      org.apache.iceberg.Schema schema = new org.apache.iceberg.Schema(structType.fields());
+      TableIdentifier identifier = TableIdentifier.parse(tableName);
+
+      List<String> partitionBy = config.tableConfig(tableName).partitionBy();
+      PartitionSpec spec;
+      try {
+        spec = SchemaUtils.createPartitionSpec(schema, partitionBy);
+      } catch (Exception e) {
+        LOG.error(
+                "Unable to create partition spec {}, table {} will be unpartitioned",
+                partitionBy,
+                identifier,
+                e);
+        spec = PartitionSpec.unpartitioned();
+      }
+
+      PartitionSpec partitionSpec = spec;
+      AtomicReference<Table> result = new AtomicReference<>();
+      Tasks.range(1)
+              .retry(IcebergSinkConfig.CREATE_TABLE_RETRIES)
+              .run(
+                      notUsed -> {
+                        try {
+                          result.set(catalog.loadTable(identifier));
+                        } catch (NoSuchTableException e) {
+                          result.set(
+                                  catalog.createTable(
+                                          identifier, schema, partitionSpec, config.autoCreateProps()));
+                          LOG.info("Created new table {} from record at topic: {}, partition: {}, offset: {}", identifier, sample.topic(), sample.kafkaPartition(), sample.kafkaOffset());
+                        }
+                      });
+      return result.get();
+    } catch (Exception e) {
+      LOG.error("Error creating new table {} from record at topic: {}, partition: {}, offset: {}", tableName, sample.topic(), sample.kafkaPartition(), sample.kafkaOffset());
+      throw e;
+    }
   }
 }

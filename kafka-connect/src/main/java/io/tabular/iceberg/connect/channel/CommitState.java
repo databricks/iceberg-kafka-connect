@@ -106,8 +106,9 @@ public class CommitState {
       return false;
     }
 
-    if (System.currentTimeMillis() - startTime > config.commitTimeoutMs()) {
-      LOG.info("Commit timeout reached");
+    long currentTime = System.currentTimeMillis();
+    if (currentTime - startTime > config.commitTimeoutMs()) {
+      LOG.info("Commit timeout reached. Now: {}, start: {}, timeout: {}", currentTime, startTime, config.commitTimeoutMs());
       return true;
     }
     return false;
@@ -125,14 +126,14 @@ public class CommitState {
             .sum();
 
     if (receivedPartitionCount >= expectedPartitionCount) {
-      LOG.debug(
+      LOG.info(
           "Commit {} ready, received responses for all {} partitions",
           currentCommitId,
           receivedPartitionCount);
       return true;
     }
 
-    LOG.debug(
+    LOG.info(
         "Commit {} not ready, received responses for {} of {} partitions, waiting for more",
         currentCommitId,
         receivedPartitionCount,

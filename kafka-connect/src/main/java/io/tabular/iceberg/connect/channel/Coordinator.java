@@ -97,10 +97,12 @@ public class Coordinator extends Channel implements AutoCloseable {
     if (commitState.isCommitIntervalReached()) {
       // send out begin commit
       commitState.startNewCommit();
+      LOG.info("Started new commit with commit-id={}", commitState.currentCommitId().toString());
       Event event =
           new Event(config.controlGroupId(), new StartCommit(commitState.currentCommitId()));
       send(event);
-      LOG.debug("Started new commit with commit-id={}", commitState.currentCommitId().toString());
+      LOG.info("Sent workers commit trigger with commit-id={}", commitState.currentCommitId().toString());
+
     }
 
     consumeAvailable(POLL_DURATION, this::receive);
@@ -127,6 +129,7 @@ public class Coordinator extends Channel implements AutoCloseable {
 
   private void commit(boolean partialCommit) {
     try {
+      LOG.info("Processing commit after responses for {}, isPartialCommit {}",commitState.currentCommitId(), partialCommit);
       doCommit(partialCommit);
     } catch (Exception e) {
       LOG.warn("Commit failed, will try again next cycle", e);

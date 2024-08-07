@@ -149,7 +149,7 @@ class Worker implements Writer, AutoCloseable {
 
   private void routeRecordDynamically(SinkRecord record) {
     String routeField = config.tablesRouteField();
-    Preconditions.checkNotNull(routeField, "Route field cannot be null with dynamic routing");
+    Preconditions.checkNotNull(routeField, String.format("Route field cannot be null with dynamic routing at topic: %s, partition: %d, offset: %d", record.topic(), record.kafkaPartition(), record.kafkaOffset()));
 
     String routeValue = extractRouteValue(record.value(), routeField);
     if (routeValue != null) {
