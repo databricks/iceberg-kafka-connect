@@ -50,7 +50,7 @@ public abstract class Channel {
   private static final Logger LOG = LoggerFactory.getLogger(Channel.class);
 
   private final String controlTopic;
-  private final String groupId;
+  private final String connectGroupId;
   private final Producer<String, byte[]> producer;
   private final Consumer<String, byte[]> consumer;
   private final Admin admin;
@@ -65,7 +65,7 @@ public abstract class Channel {
       IcebergSinkConfig config,
       KafkaClientFactory clientFactory) {
     this.controlTopic = config.controlTopic();
-    this.groupId = config.controlGroupId();
+    this.connectGroupId = config.connectGroupId();
 
     String transactionalId = name + config.transactionalSuffix();
     Pair<UUID, Producer<String, byte[]>> pair = clientFactory.createProducer(transactionalId);
@@ -130,7 +130,7 @@ public abstract class Channel {
 
             Event event = eventDecoder.decode(record.value());
             if (event != null) {
-              if (event.groupId().equals(groupId)) {
+              if (event.groupId().equals(connectGroupId)) {
                 LOG.debug("Received event of type: {}", event.type().name());
                 if (receiveFn.apply(new Envelope(event, record.partition(), record.offset()))) {
                   LOG.debug("Handled event of type: {}", event.type().name());

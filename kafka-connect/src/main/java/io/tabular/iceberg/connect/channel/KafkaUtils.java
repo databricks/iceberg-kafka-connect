@@ -19,13 +19,20 @@
 package io.tabular.iceberg.connect.channel;
 
 import java.util.concurrent.ExecutionException;
+import org.apache.iceberg.common.DynFields;
 import org.apache.iceberg.relocated.com.google.common.collect.ImmutableList;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.ConsumerGroupDescription;
 import org.apache.kafka.clients.admin.DescribeConsumerGroupsResult;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerGroupMetadata;
 import org.apache.kafka.connect.errors.ConnectException;
+import org.apache.kafka.connect.sink.SinkTaskContext;
 
 public class KafkaUtils {
+
+  private static final String CONTEXT_CLASS_NAME =
+          "org.apache.kafka.connect.runtime.WorkerSinkTaskContext";
 
   public static ConsumerGroupDescription consumerGroupDescription(
       String consumerGroupId, Admin admin) {
@@ -38,6 +45,17 @@ public class KafkaUtils {
       throw new ConnectException(
           "Cannot retrieve members for consumer group: " + consumerGroupId, e);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  public static ConsumerGroupMetadata getConsumerGroupMetadata(
+          SinkTaskContext context, String connectGroupId) {
+    if (CONTEXT_CLASS_NAME.equals(context.getClass().getName())) {
+      return ((Consumer<byte[], byte[]>)
+              DynFields.builder().hiddenImpl(CONTEXT_CLASS_NAME, "consumer").build(context).get())
+              .groupMetadata();
+    }
+    return new ConsumerGroupMetadata(connectGroupId);
   }
 
   private KafkaUtils() {}
