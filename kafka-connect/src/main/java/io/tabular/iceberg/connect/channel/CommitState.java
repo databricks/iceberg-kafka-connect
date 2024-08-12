@@ -29,8 +29,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
+
+import io.tabular.iceberg.connect.events.TransactionDataComplete;
 import org.apache.iceberg.catalog.TableIdentifier;
-import org.apache.iceberg.connect.events.DataComplete;
 import org.apache.iceberg.connect.events.DataWritten;
 import org.apache.iceberg.connect.events.TopicPartitionOffset;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class CommitState {
   private static final Logger LOG = LoggerFactory.getLogger(CommitState.class);
 
   private final List<Envelope> commitBuffer = new LinkedList<>();
-  private final List<DataComplete> readyBuffer = new LinkedList<>();
+  private final List<TransactionDataComplete> readyBuffer = new LinkedList<>();
   private long startTime;
   private UUID currentCommitId;
   private final IcebergSinkConfig config;
@@ -62,11 +63,11 @@ public class CommitState {
   }
 
   public void addReady(Envelope envelope) {
-    readyBuffer.add((DataComplete) envelope.event().payload());
+    readyBuffer.add((TransactionDataComplete) envelope.event().payload());
     if (!isCommitInProgress()) {
       LOG.debug(
           "Received data complete for commit-id={} when no commit in progress, this can happen during recovery",
-          ((DataComplete) envelope.event().payload()).commitId());
+          ((TransactionDataComplete) envelope.event().payload()).commitId());
     }
   }
 

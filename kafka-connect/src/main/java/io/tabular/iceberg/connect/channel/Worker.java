@@ -43,10 +43,12 @@ import org.slf4j.LoggerFactory;
 class Worker implements Writer, AutoCloseable {
 
   private static final Logger LOG = LoggerFactory.getLogger(Worker.class);
+  private static final String COL_TXID = "_cdc_txid";
   private final IcebergSinkConfig config;
   private final IcebergWriterFactory writerFactory;
   private final Map<String, RecordWriter> writers;
   private final Map<TopicPartition, Offset> sourceOffsets;
+  private final Map<TopicPartition, Long> sourceTxIds;
 
   Worker(IcebergSinkConfig config, Catalog catalog) {
     this(config, new IcebergWriterFactory(catalog, config));
@@ -58,6 +60,7 @@ class Worker implements Writer, AutoCloseable {
     this.writerFactory = writerFactory;
     this.writers = Maps.newHashMap();
     this.sourceOffsets = Maps.newHashMap();
+    this.sourceTxIds = Maps.newHashMap();
   }
 
   @Override
@@ -65,11 +68,13 @@ class Worker implements Writer, AutoCloseable {
     List<WriterResult> writeResults =
         writers.values().stream().flatMap(writer -> writer.complete().stream()).collect(toList());
     Map<TopicPartition, Offset> offsets = Maps.newHashMap(sourceOffsets);
+    Map<TopicPartition, Long> txIds = Maps.newHashMap(sourceTxIds);
 
     writers.clear();
     sourceOffsets.clear();
+    sourceTxIds.clear();
 
-    return new Committable(offsets, writeResults);
+    return new Committable(offsets, txIds, writeResults);
   }
 
   @Override
@@ -77,6 +82,7 @@ class Worker implements Writer, AutoCloseable {
     writers.values().forEach(RecordWriter::close);
     writers.clear();
     sourceOffsets.clear();
+    sourceTxIds.clear();
   }
 
   @Override
@@ -92,6 +98,13 @@ class Worker implements Writer, AutoCloseable {
     sourceOffsets.put(
         new TopicPartition(record.topic(), record.kafkaPartition()),
         new Offset(record.kafkaOffset() + 1, record.timestamp()));
+
+    Long txId = Utilities.extractTxIdFromRecordValue(record.value(), COL_TXID);
+    if (txId != null) {
+      sourceTxIds.put(
+          new TopicPartition(record.topic(), record.kafkaPartition()),
+          txId);
+    }
 
     if (config.dynamicTablesEnabled()) {
       routeRecordDynamically(record);

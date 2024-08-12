@@ -7,6 +7,7 @@ dependencies {
   implementation libs.iceberg.common
   implementation libs.iceberg.guava
   implementation libs.avro
+  implementation group: 'org.apache.iceberg', name: 'iceberg-kafka-connect-events', version: '1.5.1'
 
   testImplementation libs.junit.api
   testRuntimeOnly libs.junit.engine

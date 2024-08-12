@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
+
 import org.apache.iceberg.catalog.TableIdentifier;
 import org.apache.iceberg.types.Types.StructType;
 import org.junit.jupiter.api.Test;
@@ -81,7 +82,10 @@ public class EventSerializationTest {
                             commitId,
                             Arrays.asList(
                                     new TopicPartitionOffset("topic", 1, 1L, 1L),
-                                    new TopicPartitionOffset("topic", 2, null, null))));
+                                    new TopicPartitionOffset("topic", 2, null, null)),
+                            Arrays.asList(
+                                    new TopicPartitionTxId("topic", 1, 1L),
+                                    new TopicPartitionTxId("topic", 2, null))));
 
     byte[] data = Event.encode(event);
     Event result = Event.decode(data);
@@ -91,6 +95,10 @@ public class EventSerializationTest {
     assertThat(payload.commitId()).isEqualTo(commitId);
     assertThat(payload.assignments()).hasSize(2);
     assertThat(payload.assignments()).allMatch(tp -> tp.topic().equals("topic"));
+    assertThat(payload.txIds()).hasSize(2);
+    assertThat(payload.txIds()).allMatch(tp -> tp.topic().equals("topic"));
+    assertThat(payload.txIds().get(0).txId()).isEqualTo(1L);
+    assertThat(payload.txIds().get(1).txId()).isNull();
   }
 
   @Test

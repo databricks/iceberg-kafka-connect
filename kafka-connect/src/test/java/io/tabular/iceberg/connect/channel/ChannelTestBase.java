@@ -86,6 +86,8 @@ public class ChannelTestBase {
   protected static final String OFFSETS_SNAPSHOT_PROP =
       String.format("kafka.connect.offsets.%s.%s", CTL_TOPIC_NAME, CONTROL_CONSUMER_GROUP_ID);
   protected static final String VTTS_SNAPSHOT_PROP = "kafka.connect.vtts";
+  protected static final String TX_ID_VALID_THROUGH_PROP = "txid-valid-through";
+  protected static final String MAX_TX_ID__PROP = "txid-max";
 
   @BeforeEach
   @SuppressWarnings("deprecation")

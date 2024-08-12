@@ -27,7 +27,9 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
-import org.apache.iceberg.connect.events.DataComplete;
+
+import io.tabular.iceberg.connect.events.TopicPartitionTransaction;
+import io.tabular.iceberg.connect.events.TransactionDataComplete;
 import org.apache.iceberg.connect.events.Event;
 import org.apache.iceberg.connect.events.Payload;
 import org.apache.iceberg.connect.events.TopicPartitionOffset;
@@ -43,21 +45,25 @@ public class CommitStateTest {
   @Test
   public void testIsCommitReady() {
     TopicPartitionOffset tp = mock(TopicPartitionOffset.class);
+    TopicPartitionTransaction tpt = mock(TopicPartitionTransaction.class);
 
     CommitState commitState = new CommitState(mock(IcebergSinkConfig.class));
     commitState.startNewCommit();
 
-    DataComplete payload1 = mock(DataComplete.class);
+    TransactionDataComplete payload1 = mock(TransactionDataComplete.class);
     when(payload1.commitId()).thenReturn(commitState.currentCommitId());
     when(payload1.assignments()).thenReturn(ImmutableList.of(tp, tp));
+    when(payload1.txIds()).thenReturn(ImmutableList.of(tpt, tpt));
 
-    DataComplete payload2 = mock(DataComplete.class);
+    TransactionDataComplete payload2 = mock(TransactionDataComplete.class);
     when(payload2.commitId()).thenReturn(commitState.currentCommitId());
     when(payload2.assignments()).thenReturn(ImmutableList.of(tp));
+    when(payload2.txIds()).thenReturn(ImmutableList.of(tpt));
 
-    DataComplete payload3 = mock(DataComplete.class);
+    TransactionDataComplete payload3 = mock(TransactionDataComplete.class);
     when(payload3.commitId()).thenReturn(UUID.randomUUID());
     when(payload3.assignments()).thenReturn(ImmutableList.of(tp));
+    when(payload3.txIds()).thenReturn(ImmutableList.of(tpt));
 
     commitState.addReady(wrapInEnvelope(payload1));
     commitState.addReady(wrapInEnvelope(payload2));
@@ -69,14 +75,14 @@ public class CommitStateTest {
 
   @Test
   public void testGetVtts() {
-    DataComplete payload1 = mock(DataComplete.class);
+    TransactionDataComplete payload1 = mock(TransactionDataComplete.class);
     TopicPartitionOffset tp1 = mock(TopicPartitionOffset.class);
     when(tp1.timestamp()).thenReturn(offsetDateTime(3L));
     TopicPartitionOffset tp2 = mock(TopicPartitionOffset.class);
     when(tp2.timestamp()).thenReturn(offsetDateTime(2L));
     when(payload1.assignments()).thenReturn(ImmutableList.of(tp1, tp2));
 
-    DataComplete payload2 = mock(DataComplete.class);
+    TransactionDataComplete payload2 = mock(TransactionDataComplete.class);
     TopicPartitionOffset tp3 = mock(TopicPartitionOffset.class);
     when(tp3.timestamp()).thenReturn(offsetDateTime(1L));
     when(payload2.assignments()).thenReturn(ImmutableList.of(tp3));
@@ -91,7 +97,7 @@ public class CommitStateTest {
     assertThat(commitState.vtts(true)).isNull();
 
     // null timestamp for one, so should not set a vtts
-    DataComplete payload3 = mock(DataComplete.class);
+    TransactionDataComplete payload3 = mock(TransactionDataComplete.class);
     TopicPartitionOffset tp4 = mock(TopicPartitionOffset.class);
     when(tp4.timestamp()).thenReturn(null);
     when(payload3.assignments()).thenReturn(ImmutableList.of(tp4));

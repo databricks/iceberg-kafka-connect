@@ -18,19 +18,8 @@
  */
 package io.tabular.iceberg.connect.transforms;
 
-public interface CdcConstants {
-
-  String OP_INSERT = "I";
-  String OP_UPDATE = "U";
-  String OP_DELETE = "D";
-
-  String COL_CDC = "_cdc";
-  String COL_OP = "op";
-  String COL_TS = "ts";
-  String COL_OFFSET = "offset";
-  String COL_SOURCE = "source";
-  String COL_TARGET = "target";
-  String COL_KEY = "key";
-
-  String COL_TXID = "txid";
+public interface CustomFieldConstants {
+    String SOURCE_TIMESTAMP_US = "source_ts_us";
+    String SOURCE_TIMESTAMP_MS = "source_ts_ms";
+    String SOURCE_TIMESTAMP_NS = "source_ts_ns";
 }

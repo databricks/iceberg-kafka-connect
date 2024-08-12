@@ -37,13 +37,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
+import io.tabular.iceberg.connect.events.TopicPartitionTxId;
+import io.tabular.iceberg.connect.events.TransactionDataComplete;
 import org.apache.avro.Schema;
 import org.apache.iceberg.DataFile;
 import org.apache.iceberg.PartitionSpec;
 import org.apache.iceberg.catalog.TableIdentifier;
 import org.apache.iceberg.connect.events.CommitComplete;
 import org.apache.iceberg.connect.events.CommitToTable;
-import org.apache.iceberg.connect.events.DataComplete;
 import org.apache.iceberg.connect.events.DataWritten;
 import org.apache.iceberg.connect.events.Event;
 import org.apache.iceberg.connect.events.PayloadType;
@@ -190,7 +192,11 @@ public class EventDecoderTest {
                 commitId,
                 Arrays.asList(
                     new TopicPartitionOffset("topic", 1, 1L, 1L),
-                    new TopicPartitionOffset("topic", 2, null, null))));
+                    new TopicPartitionOffset("topic", 2, null, null)),
+                Arrays.asList(
+                        new TopicPartitionTxId("topic", 1, 1L),
+                        new TopicPartitionTxId("topic", 2, null))));
+
 
     byte[] data = io.tabular.iceberg.connect.events.Event.encode(event);
 
@@ -198,8 +204,8 @@ public class EventDecoderTest {
     assertThat(event.groupId()).isEqualTo("cg-connector");
 
     assertThat(result.type()).isEqualTo(PayloadType.DATA_COMPLETE);
-    assertThat(result.payload()).isInstanceOf(DataComplete.class);
-    DataComplete payload = (DataComplete) result.payload();
+    assertThat(result.payload()).isInstanceOf(TransactionDataComplete.class);
+    TransactionDataComplete payload = (TransactionDataComplete) result.payload();
 
     assertThat(payload.commitId()).isEqualTo(commitId);
     assertThat(payload.assignments().get(0).topic()).isEqualTo("topic");
@@ -212,6 +218,14 @@ public class EventDecoderTest {
     assertThat(payload.assignments().get(1).partition()).isEqualTo(2);
     assertThat(payload.assignments().get(1).offset()).isNull();
     assertThat(payload.assignments().get(1).timestamp()).isNull();
+
+    assertThat(payload.txIds().get(0).topic()).isEqualTo("topic");
+    assertThat(payload.txIds().get(0).partition()).isEqualTo(1);
+    assertThat(payload.txIds().get(0).txId()).isEqualTo(1L);
+
+    assertThat(payload.txIds().get(1).topic()).isEqualTo("topic");
+    assertThat(payload.txIds().get(1).partition()).isEqualTo(2);
+    assertThat(payload.txIds().get(1).txId()).isNull();
   }
 
   @Test

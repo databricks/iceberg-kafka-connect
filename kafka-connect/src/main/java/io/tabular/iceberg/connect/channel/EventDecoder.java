@@ -23,20 +23,24 @@ import io.tabular.iceberg.connect.events.CommitReadyPayload;
 import io.tabular.iceberg.connect.events.CommitRequestPayload;
 import io.tabular.iceberg.connect.events.CommitResponsePayload;
 import io.tabular.iceberg.connect.events.CommitTablePayload;
+
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import io.tabular.iceberg.connect.events.TopicPartitionTransaction;
+import io.tabular.iceberg.connect.events.TransactionDataComplete;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
 import org.apache.iceberg.DataFile;
 import org.apache.iceberg.DeleteFile;
 import org.apache.iceberg.avro.AvroSchemaUtil;
+import io.tabular.iceberg.connect.events.TopicPartitionTxId;
 import org.apache.iceberg.connect.events.AvroUtil;
 import org.apache.iceberg.connect.events.CommitComplete;
 import org.apache.iceberg.connect.events.CommitToTable;
-import org.apache.iceberg.connect.events.DataComplete;
 import org.apache.iceberg.connect.events.DataWritten;
 import org.apache.iceberg.connect.events.Event;
 import org.apache.iceberg.connect.events.Payload;
@@ -109,7 +113,13 @@ public class EventDecoder {
                               : OffsetDateTime.ofInstant(
                                   Instant.ofEpochMilli(t.timestamp()), ZoneOffset.UTC)))
               .collect(Collectors.toList());
-      return new DataComplete(pay.commitId(), converted);
+      List<TopicPartitionTxId> legacyTPT = pay.txIds();
+      List<TopicPartitionTransaction> convertedTxIds =
+          legacyTPT.stream()
+              .map(
+                  t -> new TopicPartitionTransaction(t.topic(), t.partition(), t.txId()))
+              .collect(Collectors.toList());
+      return new TransactionDataComplete(pay.commitId(), converted, convertedTxIds);
     } else if (payload instanceof CommitTablePayload) {
       CommitTablePayload pay = (CommitTablePayload) payload;
       return new CommitToTable(

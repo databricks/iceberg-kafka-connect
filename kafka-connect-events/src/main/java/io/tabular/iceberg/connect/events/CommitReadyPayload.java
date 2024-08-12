@@ -27,6 +27,7 @@ public class CommitReadyPayload implements Payload {
 
   private UUID commitId;
   private List<TopicPartitionOffset> assignments;
+  private List<TopicPartitionTxId> txIds;
   private final Schema avroSchema;
 
   private static final Schema AVRO_SCHEMA =
@@ -44,6 +45,13 @@ public class CommitReadyPayload implements Payload {
           .array()
           .items(TopicPartitionOffset.AVRO_SCHEMA)
           .noDefault()
+          .name("txIds")
+          .prop(FIELD_ID_PROP, DUMMY_FIELD_ID)
+          .type()
+          .nullable()
+          .array()
+          .items(TopicPartitionTxId.AVRO_SCHEMA)
+          .noDefault()
           .endRecord();
 
   // Used by Avro reflection to instantiate this class when reading events
@@ -51,9 +59,10 @@ public class CommitReadyPayload implements Payload {
     this.avroSchema = avroSchema;
   }
 
-  public CommitReadyPayload(UUID commitId, List<TopicPartitionOffset> assignments) {
+  public CommitReadyPayload(UUID commitId, List<TopicPartitionOffset> assignments, List<TopicPartitionTxId> txIds) {
     this.commitId = commitId;
     this.assignments = assignments;
+    this.txIds = txIds;
     this.avroSchema = AVRO_SCHEMA;
   }
 
@@ -64,6 +73,10 @@ public class CommitReadyPayload implements Payload {
   public List<TopicPartitionOffset> assignments() {
     return assignments;
   }
+
+    public List<TopicPartitionTxId> txIds() {
+        return txIds;
+    }
 
   @Override
   public Schema getSchema() {
@@ -80,6 +93,9 @@ public class CommitReadyPayload implements Payload {
       case 1:
         this.assignments = (List<TopicPartitionOffset>) v;
         return;
+      case 2:
+        this.txIds = (List<TopicPartitionTxId>) v;
+        return;
       default:
         // ignore the object, it must be from a newer version of the format
     }
@@ -92,6 +108,8 @@ public class CommitReadyPayload implements Payload {
         return commitId;
       case 1:
         return assignments;
+      case 2:
+        return txIds;
       default:
         throw new UnsupportedOperationException("Unknown field ordinal: " + i);
     }

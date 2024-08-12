@@ -57,6 +57,7 @@ public class DebeziumTransformTest {
           .field("source", SOURCE_SCHEMA)
           .field("before", ROW_SCHEMA)
           .field("after", ROW_SCHEMA)
+          .field("txid", Schema.INT64_SCHEMA)
           .build();
 
   @Test
