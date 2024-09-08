@@ -31,7 +31,7 @@ import org.apache.iceberg.io.OutputFileFactory;
 public class UnpartitionedDeltaWriter extends BaseDeltaTaskWriter {
   private final RowDataDeltaWriter writer;
 
-  UnpartitionedDeltaWriter(
+  public UnpartitionedDeltaWriter(
       PartitionSpec spec,
       FileFormat format,
       FileAppenderFactory<Record> appenderFactory,
