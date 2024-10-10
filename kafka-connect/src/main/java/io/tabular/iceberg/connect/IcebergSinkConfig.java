@@ -451,12 +451,15 @@ public class IcebergSinkConfig extends AbstractConfig {
     return jsonConverter;
   }
 
+  public static boolean checkClassName(String className) {
+    return (className.matches(".*\\.ConnectDistributed.*") || className.matches(".*\\.ConnectStandalone.*"));
+  }
+
   private Map<String, String> loadWorkerProps() {
     String javaCmd = System.getProperty("sun.java.command");
     if (javaCmd != null && !javaCmd.isEmpty()) {
       String[] args = javaCmd.split(" ");
-      if (args.length > 1
-          && (args[0].endsWith(".ConnectDistributed") || args[0].endsWith(".ConnectStandalone"))) {
+      if (args.length > 1 && checkClassName(args[0])) {
         Properties result = new Properties();
         try (InputStream in = Files.newInputStream(Paths.get(args[1]))) {
           result.load(in);
