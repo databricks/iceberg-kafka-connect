@@ -241,7 +241,7 @@ public class CoordinatorTest extends ChannelTestBase {
     Assertions.assertEquals(1, snapshots.size());
 
     Snapshot snapshot = snapshots.get(0);
-    Assertions.assertEquals(DataOperations.OVERWRITE, snapshot.operation());
+    Assertions.assertEquals(DataOperations.DELETE, snapshot.operation());
     Assertions.assertEquals(0, ImmutableList.copyOf(snapshot.addedDataFiles(table.io())).size());
     Assertions.assertEquals(1, ImmutableList.copyOf(snapshot.addedDeleteFiles(table.io())).size());
   }

@@ -177,7 +177,7 @@ public class EventDecoderTest {
                     Types.NestedField.optional(
                             10_304,
                             "delete_files",
-                            Types.ListType.ofRequired(10_304, DataFile.getType(spec.partitionType())))));
+                            Types.ListType.ofRequired(10_305, DataFile.getType(spec.partitionType())))));
   }
 
   @Test

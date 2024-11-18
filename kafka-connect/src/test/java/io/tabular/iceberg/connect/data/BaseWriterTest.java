@@ -67,7 +67,7 @@ public class BaseWriterTest {
     when(table.io()).thenReturn(fileIO);
     when(table.locationProvider())
         .thenReturn(LocationProviders.locationsFor("file", ImmutableMap.of()));
-    when(table.encryption()).thenReturn(new PlaintextEncryptionManager());
+    when(table.encryption()).thenReturn(PlaintextEncryptionManager.instance());
     when(table.properties()).thenReturn(ImmutableMap.of());
   }
 
