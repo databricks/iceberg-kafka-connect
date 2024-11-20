@@ -384,13 +384,21 @@ public class RecordConverter {
     throw new IllegalArgumentException("Cannot convert to string: " + value.getClass().getName());
   }
 
-  protected UUID convertUUID(Object value) {
+  protected byte[] convertUUID(Object value) {
     if (value instanceof String) {
-      return UUID.fromString((String) value);
+      return asBytes(UUID.fromString((String) value));
     } else if (value instanceof UUID) {
-      return (UUID) value;
+      return asBytes((UUID)value);
     }
     throw new IllegalArgumentException("Cannot convert to UUID: " + value.getClass().getName());
+  }
+
+  protected static byte[] asBytes(UUID uuid) {
+    byte[] bytes = new byte[16];
+    java.nio.ByteBuffer.wrap(bytes)
+            .putLong(uuid.getMostSignificantBits())
+            .putLong(uuid.getLeastSignificantBits());
+    return bytes;
   }
 
   protected ByteBuffer convertBase64Binary(Object value) {
