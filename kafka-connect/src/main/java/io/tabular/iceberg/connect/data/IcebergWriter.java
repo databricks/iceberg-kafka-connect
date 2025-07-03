@@ -75,11 +75,20 @@ public class IcebergWriter implements RecordWriter {
         }
       }
     } catch (Exception e) {
-      throw new DataException(
-          String.format(
-              "An error occurred converting record, topic: %s, partition, %d, offset: %d",
-              record.topic(), record.kafkaPartition(), record.kafkaOffset()),
-          e);
+      String recordData = "";
+      if (this.config.errorLogIncludeMessages()) {
+        recordData = String.format(", record: %s", record.value().toString());
+      }
+      DataException ex = new DataException(
+              String.format(
+                      "An error occurred converting record, topic: %s, partition, %d, offset: %d %s",
+                      record.topic(), record.kafkaPartition(), record.kafkaOffset(), recordData),
+              e);
+      if (this.config.errorTolerance().equalsIgnoreCase(ErrorTolerance.ALL.toString())) {
+        LOG.error(ex.toString());
+      } else {
+        throw ex;
+      }
     }
   }
 
