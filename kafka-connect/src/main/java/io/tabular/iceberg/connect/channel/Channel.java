@@ -49,6 +49,9 @@ public abstract class Channel {
 
   private static final Logger LOG = LoggerFactory.getLogger(Channel.class);
 
+  // 30 seconds set as minimum for Amazon MSK to connect successfully
+  protected static final int INITIAL_CONNECTION_TIMEOUT_MS = 30000;
+
   private final String controlTopic;
   private final String groupId;
   private final Producer<String, byte[]> producer;

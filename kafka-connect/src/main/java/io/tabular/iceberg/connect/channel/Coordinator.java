@@ -90,7 +90,7 @@ public class Coordinator extends Channel implements AutoCloseable {
     this.commitState = new CommitState(config);
 
     // initial poll with longer duration so the consumer will initialize...
-    consumeAvailable(Duration.ofMillis(1000), this::receive);
+    consumeAvailable(Duration.ofMillis(INITIAL_CONNECTION_TIMEOUT_MS), this::receive);
   }
 
   public void process() {
