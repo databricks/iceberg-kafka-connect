@@ -59,4 +59,29 @@ public class UnpartitionedDeltaWriterTest extends BaseWriterTest {
     assertThat(result.deleteFiles())
         .allMatch(file -> file.format() == FileFormat.fromString(format));
   }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"parquet", "orc"})
+  public void testUnpartitionedDeltaWriterCDC(String format) {
+    IcebergSinkConfig config = mock(IcebergSinkConfig.class);
+    when(config.upsertModeEnabled()).thenReturn(true);
+    when(config.tableConfig(any())).thenReturn(mock(TableSinkConfig.class));
+    when(config.writeProps()).thenReturn(ImmutableMap.of("write.format.default", format));
+
+    Record row = GenericRecord.create(SCHEMA);
+    row.setField("id", 123L);
+    row.setField("data", "hello world!");
+    row.setField("id2", 123L);
+    row = new RecordWrapper(row, Operation.INSERT);
+
+    WriteResult result = writeTest(ImmutableList.of(row), config, UnpartitionedDeltaWriter.class);
+
+    // in upsert mode, each write is a delete + append, so we'll have 1 data file
+    // and 1 delete file
+    assertThat(result.dataFiles()).hasSize(1);
+    assertThat(result.dataFiles()).allMatch(file -> file.format() == FileFormat.fromString(format));
+    assertThat(result.deleteFiles()).hasSize(1);
+    assertThat(result.deleteFiles())
+        .allMatch(file -> file.format() == FileFormat.fromString(format));
+  }
 }

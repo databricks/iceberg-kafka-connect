@@ -70,10 +70,13 @@ abstract class BaseDeltaTaskWriter extends BaseTaskWriter<Record> {
 
   @Override
   public void write(Record row) throws IOException {
-    Operation op =
-        row instanceof RecordWrapper
-            ? ((RecordWrapper) row).op()
-            : upsertMode ? Operation.UPDATE : Operation.INSERT;
+    Operation op = Operation.INSERT;
+    if (row instanceof RecordWrapper) {
+      op = ((RecordWrapper) row).op();
+    }
+    if (upsertMode && op == Operation.INSERT) {
+      op = Operation.UPDATE;
+    }
     RowDataDeltaWriter writer = route(row);
     if (op == Operation.UPDATE || op == Operation.DELETE) {
       writer.deleteKey(keyProjection.wrap(row));

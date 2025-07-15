@@ -67,4 +67,38 @@ public class PartitionedDeltaWriterTest extends BaseWriterTest {
     assertThat(result.deleteFiles())
         .allMatch(file -> file.format() == FileFormat.fromString(format));
   }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"parquet", "orc"})
+  public void testPartitionedDeltaWriterCDC(String format) {
+    IcebergSinkConfig config = mock(IcebergSinkConfig.class);
+    when(config.upsertModeEnabled()).thenReturn(true);
+    when(config.tableConfig(any())).thenReturn(mock(TableSinkConfig.class));
+    when(config.writeProps()).thenReturn(ImmutableMap.of("write.format.default", format));
+
+    when(table.spec()).thenReturn(SPEC);
+
+    Record row1 = GenericRecord.create(SCHEMA);
+    row1.setField("id", 123L);
+    row1.setField("data", "hello world!");
+    row1.setField("id2", 123L);
+    row1 = new RecordWrapper(row1, Operation.INSERT);
+
+    Record row2 = GenericRecord.create(SCHEMA);
+    row2.setField("id", 234L);
+    row2.setField("data", "foobar");
+    row2.setField("id2", 234L);
+    row2 = new RecordWrapper(row2, Operation.INSERT);
+
+    WriteResult result =
+        writeTest(ImmutableList.of(row1, row2), config, PartitionedDeltaWriter.class);
+
+    // in upsert mode, each write is a delete + append, so we'll have 1 data file
+    // and 1 delete file for each partition (2 total)
+    assertThat(result.dataFiles()).hasSize(2);
+    assertThat(result.dataFiles()).allMatch(file -> file.format() == FileFormat.fromString(format));
+    assertThat(result.deleteFiles()).hasSize(2);
+    assertThat(result.deleteFiles())
+        .allMatch(file -> file.format() == FileFormat.fromString(format));
+  }
 }
