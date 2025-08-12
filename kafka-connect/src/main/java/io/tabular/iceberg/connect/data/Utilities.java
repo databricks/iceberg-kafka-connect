@@ -31,6 +31,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -129,6 +130,15 @@ public class Utilities {
     } else {
       throw new UnsupportedOperationException(
           "Cannot extract value from type: " + recordValue.getClass().getName());
+    }
+  }
+
+  public static Long extractTxIdFromRecordValue(Object recordValue, String fieldName) {
+    Object txId = extractFromRecordValue(recordValue, fieldName);
+    if (txId instanceof Number) {
+      return ((Number) txId).longValue();
+    } else {
+      return null;
     }
   }
 
@@ -277,6 +287,24 @@ public class Utilities {
         }
       }
     }
+  }
+
+  public static Long calculateTxIdValidThrough(Map<?, Long> highestTxIdPerPartition) {
+    if (highestTxIdPerPartition.isEmpty()) {
+      return 0L;
+    }
+
+    // Find the minimum value in the map, as it represents the highest transaction ID
+    // that is common across all partitions
+    long minValue = Collections.min(highestTxIdPerPartition.values());
+
+    // Subtract 1 from the minimum value to get the last guaranteed completed transaction ID
+    // If minValue is 1, then there are no completed transactions, so return 0
+    return minValue > 1 ? minValue - 1 : 0;
+  }
+
+  public static Long getMaxTxId(Map<?, Long> highestTxIdPerPartition) {
+    return highestTxIdPerPartition.values().stream().max(Long::compareTo).orElse(0L);
   }
 
   private Utilities() {}

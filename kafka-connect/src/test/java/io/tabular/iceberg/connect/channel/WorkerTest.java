@@ -41,6 +41,7 @@ public class WorkerTest {
   private static final String SRC_TOPIC_NAME = "src-topic";
   private static final String TABLE_NAME = "db.tbl";
   private static final String FIELD_NAME = "fld";
+  private static final String TRANSACTION_FIELD_NAME = "_cdc_txid";
 
   @Test
   public void testStaticRoute() {
@@ -62,13 +63,28 @@ public class WorkerTest {
     workerTest(config, value);
   }
 
-  private void workerTest(IcebergSinkConfig config, Map<String, Object> value) {
+  @Test
+  public void testStaticRouteTransactionEvent() {
+    IcebergSinkConfig config = mock(IcebergSinkConfig.class);
+    when(config.tables()).thenReturn(ImmutableList.of(TABLE_NAME));
+    when(config.catalogName()).thenReturn("catalog");
+    Map<String, Object> value = ImmutableMap.of(TRANSACTION_FIELD_NAME, 743);
+    Committable committable = workerTest(config, value);
+
+    assertThat(
+            committable
+                    .txIdsByTopicPartition()
+                    .get(committable.txIdsByTopicPartition().keySet().iterator().next()))
+            .isEqualTo(743L);
+  }
+
+  private Committable workerTest(IcebergSinkConfig config, Map<String, Object> value) {
     WriterResult writeResult =
-        new WriterResult(
-            TableIdentifier.parse(TABLE_NAME),
-            ImmutableList.of(EventTestUtil.createDataFile()),
-            ImmutableList.of(),
-            StructType.of());
+            new WriterResult(
+                    TableIdentifier.parse(TABLE_NAME),
+                    ImmutableList.of(EventTestUtil.createDataFile()),
+                    ImmutableList.of(),
+                    StructType.of());
     IcebergWriter writer = mock(IcebergWriter.class);
     when(writer.complete()).thenReturn(ImmutableList.of(writeResult));
 
@@ -87,9 +103,11 @@ public class WorkerTest {
     // offset should be one more than the record offset
     assertThat(
             committable
-                .offsetsByTopicPartition()
-                .get(committable.offsetsByTopicPartition().keySet().iterator().next())
-                .offset())
-        .isEqualTo(1L);
+                    .offsetsByTopicPartition()
+                    .get(committable.offsetsByTopicPartition().keySet().iterator().next())
+                    .offset())
+            .isEqualTo(1L);
+
+    return committable;
   }
 }

@@ -25,21 +25,32 @@ import java.util.Map;
 import org.apache.iceberg.relocated.com.google.common.collect.ImmutableList;
 import org.apache.iceberg.relocated.com.google.common.collect.ImmutableMap;
 import org.apache.kafka.common.TopicPartition;
+import java.util.stream.Collectors;
 
 class Committable {
 
   private final ImmutableMap<TopicPartition, Offset> offsetsByTopicPartition;
+  private final ImmutableMap<TopicPartition, Long> txIdsByTopicPartition;
   private final ImmutableList<WriterResult> writerResults;
 
   Committable(
-      Map<TopicPartition, Offset> offsetsByTopicPartition, List<WriterResult> writerResults) {
+          Map<TopicPartition, Offset> offsetsByTopicPartition, Map<TopicPartition, Long> txIdsByTopicPartition, List<WriterResult> writerResults) {
     this.offsetsByTopicPartition = ImmutableMap.copyOf(offsetsByTopicPartition);
+    this.txIdsByTopicPartition = ImmutableMap.copyOf(
+            txIdsByTopicPartition.entrySet().stream()
+                    .filter(entry -> entry.getValue() != null)
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+    );
     this.writerResults = ImmutableList.copyOf(writerResults);
   }
 
   public Map<TopicPartition, Offset> offsetsByTopicPartition() {
     return offsetsByTopicPartition;
   }
+
+    public Map<TopicPartition, Long> txIdsByTopicPartition() {
+        return txIdsByTopicPartition;
+    }
 
   public List<WriterResult> writerResults() {
     return writerResults;

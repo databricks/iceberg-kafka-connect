@@ -41,6 +41,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import io.tabular.iceberg.connect.events.TransactionDataComplete;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.iceberg.ContentFile;
 import org.apache.iceberg.DataFile;
@@ -49,7 +51,6 @@ import org.apache.iceberg.catalog.TableIdentifier;
 import org.apache.iceberg.common.DynConstructors;
 import org.apache.iceberg.connect.events.AvroUtil;
 import org.apache.iceberg.connect.events.CommitComplete;
-import org.apache.iceberg.connect.events.DataComplete;
 import org.apache.iceberg.connect.events.DataWritten;
 import org.apache.iceberg.connect.events.Event;
 import org.apache.iceberg.connect.events.PayloadType;
@@ -259,13 +260,14 @@ class CommitterImplTest {
       ProducerRecord<String, byte[]> producerRecord,
       UUID expectedProducerId,
       UUID expectedCommitId,
-      Map<TopicPartition, Pair<Long, OffsetDateTime>> expectedAssignments) {
+      Map<TopicPartition, Pair<Long, OffsetDateTime>> expectedAssignments,
+      Map<TopicPartition, Long> expectedTxIds) {
     assertThat(producerRecord.key()).isEqualTo(expectedProducerId.toString());
 
     Event event = AvroUtil.decode(producerRecord.value());
     assertThat(event.type()).isEqualTo(PayloadType.DATA_COMPLETE);
-    assertThat(event.payload()).isInstanceOf(DataComplete.class);
-    DataComplete commitReadyPayload = (DataComplete) event.payload();
+    assertThat(event.payload()).isInstanceOf(TransactionDataComplete.class);
+    TransactionDataComplete commitReadyPayload = (TransactionDataComplete) event.payload();
     assertThat(commitReadyPayload.commitId()).isEqualTo(expectedCommitId);
     assertThat(
             commitReadyPayload.assignments().stream()
@@ -277,6 +279,18 @@ class CommitterImplTest {
                 .collect(Collectors.toList()))
         .isEqualTo(
             expectedAssignments.entrySet().stream()
+                .map(e -> Pair.of(e.getKey(), e.getValue()))
+                .collect(Collectors.toList()));
+
+    assertThat(
+            commitReadyPayload.txIds().stream()
+                .map(
+                    x ->
+                        Pair.of(
+                            new TopicPartition(x.topic(), x.partition()), x.txId()))
+                .collect(Collectors.toList()))
+        .isEqualTo(
+            expectedTxIds.entrySet().stream()
                 .map(e -> Pair.of(e.getKey(), e.getValue()))
                 .collect(Collectors.toList()));
   }
@@ -424,10 +438,12 @@ class CommitterImplTest {
     List<DeleteFile> deleteFiles = ImmutableList.of();
     Types.StructType partitionStruct = Types.StructType.of();
     Map<TopicPartition, Offset> sourceOffsets = ImmutableMap.of(SOURCE_TP0, new Offset(100L, 200L));
+    Map<TopicPartition, Long> sourceTxIds = ImmutableMap.of(SOURCE_TP0, 100L);
     CommittableSupplier committableSupplier =
         () ->
             new Committable(
                 sourceOffsets,
+                sourceTxIds,
                 ImmutableList.of(
                     new WriterResult(TABLE_1_IDENTIFIER, dataFiles, deleteFiles, partitionStruct)));
 
@@ -462,7 +478,8 @@ class CommitterImplTest {
           producer.history().get(1),
           producerId,
           commitId,
-          ImmutableMap.of(SOURCE_TP0, Pair.of(100L, offsetDateTime(200L))));
+          ImmutableMap.of(SOURCE_TP0, Pair.of(100L, offsetDateTime(200L))),
+          ImmutableMap.of(SOURCE_TP0, 100L));
 
       assertThat(producer.consumerGroupOffsetsHistory()).hasSize(2);
       Map<TopicPartition, OffsetAndMetadata> expectedConsumerOffset =
@@ -487,7 +504,7 @@ class CommitterImplTest {
             CONFIG.controlGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
 
     CommittableSupplier committableSupplier =
-        () -> new Committable(ImmutableMap.of(), ImmutableList.of());
+        () -> new Committable(ImmutableMap.of(), ImmutableMap.of(), ImmutableList.of());
 
     try (CommitterImpl committerImpl =
         new CommitterImpl(mockContext, CONFIG, kafkaClientFactory, coordinatorThreadFactory)) {
@@ -514,7 +531,8 @@ class CommitterImplTest {
           producer.history().get(0),
           producerId,
           commitId,
-          ImmutableMap.of(SOURCE_TP0, Pair.of(null, null)));
+          ImmutableMap.of(SOURCE_TP0, Pair.of(null, null)),
+          ImmutableMap.of());
 
       assertThat(producer.consumerGroupOffsetsHistory()).hasSize(0);
     }
@@ -545,6 +563,7 @@ class CommitterImplTest {
         () ->
             new Committable(
                 ImmutableMap.of(sourceTp1, new Offset(100L, 200L)),
+                ImmutableMap.of(sourceTp1, 999L),
                 ImmutableList.of(
                     new WriterResult(TABLE_1_IDENTIFIER, dataFiles, deleteFiles, partitionStruct)));
 
@@ -581,7 +600,8 @@ class CommitterImplTest {
           commitId,
           ImmutableMap.of(
               sourceTp0, Pair.of(null, null),
-              sourceTp1, Pair.of(100L, offsetDateTime(200L))));
+              sourceTp1, Pair.of(100L, offsetDateTime(200L))),
+              ImmutableMap.of(sourceTp1, 999L));
 
       assertThat(producer.consumerGroupOffsetsHistory()).hasSize(2);
       Map<TopicPartition, OffsetAndMetadata> expectedConsumerOffset =
