@@ -43,7 +43,8 @@ The zip archive will be found under `./kafka-connect-runtime/build/distributions
 | iceberg.table.\<table name\>.id-columns    | Comma-separated list of columns that identify a row in the table (primary key)                                   |
 | iceberg.table.\<table name\>.partition-by  | Comma-separated list of partition fields to use when creating the table                                          |
 | iceberg.table.\<table name\>.route-regex   | The regex used to match a record's `routeField` to a table                                                       |
-| iceberg.control.topic                      | Name of the control topic, default is `control-iceberg`                                                          |
+| iceberg.control.topic                      | Name of the control topic, default is `control-iceberg`.
+The same control topic cannot be used for different connectors consuming from different topics.                                                                 |
 | iceberg.control.group-id                   | Name of the consumer group to store offsets, default is `cg-control-<connector name>`                            |
 | iceberg.control.commit.interval-ms         | Commit interval in msec, default is 300,000 (5 min)                                                              |
 | iceberg.control.commit.timeout-ms          | Commit timeout interval in msec, default is 30,000 (30 sec)                                                      |
