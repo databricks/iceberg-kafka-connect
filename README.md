@@ -60,6 +60,11 @@ contain the name of the table. Enabling `iceberg.tables.upsert-mode-enabled` wil
 preceded by an equality delete. Both CDC and upsert mode require an Iceberg V2 table with identity fields
 defined.
 
+It is safe to reuse the same `iceberg.control.topic` for multiple connectors as this is expected to be a 
+relatively low traffic topic. Connectors can distinguish between which messages are relevant to them or not by looking 
+at the `iceberg.control.group-id` that is encoded inside each message for this purpose. Naturally, this does mean that 
+`iceberg.control.group-id` cannot be shared between multiple connectors. 
+
 ## Kafka configuration
 
 By default the connector will attempt to use Kafka client config from the worker properties for connecting to
