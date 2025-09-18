@@ -1,0 +1,4 @@
+io.tabular.iceberg.connect.transforms.DebeziumTransform
+io.tabular.iceberg.connect.transforms.JsonToMapTransform
+io.tabular.iceberg.connect.transforms.KafkaMetadataTransform
+io.tabular.iceberg.connect.transforms.MongoDebeziumTransform
