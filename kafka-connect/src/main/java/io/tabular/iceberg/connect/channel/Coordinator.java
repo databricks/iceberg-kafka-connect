@@ -78,14 +78,14 @@ public class Coordinator extends Channel implements AutoCloseable {
       Collection<MemberDescription> members,
       KafkaClientFactory clientFactory) {
     // pass consumer group ID to which we commit low watermark offsets
-    super("coordinator", config.controlGroupId() + "-coord", config, clientFactory);
+    super("coordinator", config.controlCoordinatorGroupId(), config, clientFactory);
 
     this.catalog = catalog;
     this.config = config;
     this.totalPartitionCount =
         members.stream().mapToInt(desc -> desc.assignment().topicPartitions().size()).sum();
     this.snapshotOffsetsProp =
-        String.format(OFFSETS_SNAPSHOT_PROP_FMT, config.controlTopic(), config.controlGroupId());
+        String.format(OFFSETS_SNAPSHOT_PROP_FMT, config.controlTopic(), config.connectGroupId());
     this.exec = ThreadPools.newWorkerPool("iceberg-committer", config.commitThreads());
     this.commitState = new CommitState(config);
 
@@ -99,7 +99,7 @@ public class Coordinator extends Channel implements AutoCloseable {
       commitState.startNewCommit();
       LOG.info("Started new commit with commit-id={}", commitState.currentCommitId().toString());
       Event event =
-          new Event(config.controlGroupId(), new StartCommit(commitState.currentCommitId()));
+          new Event(config.connectGroupId(), new StartCommit(commitState.currentCommitId()));
       send(event);
       LOG.info("Sent workers commit trigger with commit-id={}", commitState.currentCommitId().toString());
 
@@ -157,7 +157,7 @@ public class Coordinator extends Channel implements AutoCloseable {
     commitState.clearResponses();
 
     Event event =
-        new Event(config.controlGroupId(), new CommitComplete(commitState.currentCommitId(), vtts));
+        new Event(config.connectGroupId(), new CommitComplete(commitState.currentCommitId(), vtts));
     send(event);
 
     LOG.info(
@@ -259,7 +259,7 @@ public class Coordinator extends Channel implements AutoCloseable {
       Long snapshotId = latestSnapshot(table, branch.orElse(null)).snapshotId();
       Event event =
           new Event(
-              config.controlGroupId(),
+              config.connectGroupId(),
               new CommitToTable(
                   commitState.currentCommitId(),
                   TableReference.of(config.catalogName(), tableIdentifier),

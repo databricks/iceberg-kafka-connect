@@ -176,7 +176,7 @@ public class CoordinatorTest extends ChannelTestBase {
             currentCommitId -> {
               Event commitResponse =
                   new Event(
-                      config.controlGroupId(),
+                      config.connectGroupId(),
                       new DataWritten(
                           StructType.of(),
                           currentCommitId,
@@ -188,7 +188,7 @@ public class CoordinatorTest extends ChannelTestBase {
                   commitResponse,
                   commitResponse, // duplicate commit response
                   new Event(
-                      config.controlGroupId(),
+                      config.connectGroupId(),
                       new DataComplete(
                           currentCommitId,
                           ImmutableList.of(new TopicPartitionOffset("topic", 1, 1L, ts)))));
@@ -216,7 +216,7 @@ public class CoordinatorTest extends ChannelTestBase {
             currentCommitId -> {
               Event duplicateCommitResponse =
                   new Event(
-                      config.controlGroupId(),
+                      config.connectGroupId(),
                       new DataWritten(
                           StructType.of(),
                           currentCommitId,
@@ -228,7 +228,7 @@ public class CoordinatorTest extends ChannelTestBase {
                   duplicateCommitResponse,
                   duplicateCommitResponse, // duplicate commit response
                   new Event(
-                      config.controlGroupId(),
+                      config.connectGroupId(),
                       new DataComplete(
                           currentCommitId,
                           ImmutableList.of(new TopicPartitionOffset("topic", 1, 1L, ts)))));
@@ -338,7 +338,7 @@ public class CoordinatorTest extends ChannelTestBase {
               "key",
               AvroUtil.encode(
                   new Event(
-                      config.controlGroupId(),
+                      config.connectGroupId(),
                       new DataWritten(
                           spec.partitionType(),
                           commitId,
@@ -355,7 +355,7 @@ public class CoordinatorTest extends ChannelTestBase {
               "key",
               AvroUtil.encode(
                   new Event(
-                      config.controlGroupId(),
+                      config.connectGroupId(),
                       new DataComplete(
                           commitId,
                           ImmutableList.of(
@@ -433,7 +433,7 @@ public class CoordinatorTest extends ChannelTestBase {
         currentCommitId -> {
           Event commitResponse =
               new Event(
-                  config.controlGroupId(),
+                  config.connectGroupId(),
                   new DataWritten(
                       StructType.of(),
                       currentCommitId,
@@ -443,7 +443,7 @@ public class CoordinatorTest extends ChannelTestBase {
 
           Event commitReady =
               new Event(
-                  config.controlGroupId(),
+                  config.connectGroupId(),
                   new DataComplete(
                       currentCommitId,
                       ImmutableList.of(new TopicPartitionOffset("topic", 1, 1L, ts))));

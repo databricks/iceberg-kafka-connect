@@ -44,7 +44,6 @@ import org.apache.iceberg.relocated.com.google.common.collect.ImmutableMap;
 import org.apache.iceberg.relocated.com.google.common.collect.Lists;
 import org.apache.kafka.clients.admin.ListConsumerGroupOffsetsOptions;
 import org.apache.kafka.clients.admin.ListConsumerGroupOffsetsResult;
-import org.apache.kafka.clients.consumer.ConsumerGroupMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.sink.SinkTaskContext;
@@ -94,7 +93,7 @@ public class CommitterImpl extends Channel implements Committer, AutoCloseable {
 
     // The source-of-truth for source-topic offsets is the control-group-id
     Map<TopicPartition, Long> stableConsumerOffsets =
-        fetchStableConsumerOffsets(config.controlGroupId());
+        fetchStableConsumerOffsets(config.connectGroupId());
     // Rewind kafka connect consumer to avoid duplicates
     context.offset(stableConsumerOffsets);
 
@@ -148,7 +147,7 @@ public class CommitterImpl extends Channel implements Committer, AutoCloseable {
             writerResult -> {
               Event commitResponse =
                   new Event(
-                      config.controlGroupId(),
+                      config.connectGroupId(),
                       new DataWritten(
                           writerResult.partitionStruct(),
                           commitId,
@@ -178,13 +177,12 @@ public class CommitterImpl extends Channel implements Committer, AutoCloseable {
 
     Event commitReady =
         new Event(
-            config.controlGroupId(),
+            config.connectGroupId(),
             new DataComplete(commitId, assignments));
     events.add(commitReady);
 
     Map<TopicPartition, Offset> offsets = committable.offsetsByTopicPartition();
-    send(events, offsets, new ConsumerGroupMetadata(config.controlGroupId()));
-    send(ImmutableList.of(), offsets, new ConsumerGroupMetadata(config.connectGroupId()));
+    send(events, offsets, KafkaUtils.getConsumerGroupMetadata(context, config.connectGroupId()));
   }
 
   @Override

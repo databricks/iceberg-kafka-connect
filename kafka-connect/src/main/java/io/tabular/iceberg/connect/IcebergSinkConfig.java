@@ -99,6 +99,7 @@ public class IcebergSinkConfig extends AbstractConfig {
   private static final String DEFAULT_CATALOG_NAME = "iceberg";
   private static final String DEFAULT_CONTROL_TOPIC = "control-iceberg";
   public static final String DEFAULT_CONTROL_GROUP_PREFIX = "cg-control-";
+  public static final String DEFAULT_COORDINATOR_CONTROL_GROUP_SUFFIX = "-coord";
 
   public static final int SCHEMA_UPDATE_RETRIES = 2; // 3 total attempts
   public static final int CREATE_TABLE_RETRIES = 2; // 3 total attempts
@@ -390,14 +391,14 @@ public class IcebergSinkConfig extends AbstractConfig {
     return getString(CONTROL_TOPIC_PROP);
   }
 
-  public String controlGroupId() {
+  public String controlCoordinatorGroupId() {
     String result = getString(CONTROL_GROUP_ID_PROP);
     if (result != null) {
-      return result;
+      return result + DEFAULT_COORDINATOR_CONTROL_GROUP_SUFFIX;
     }
     String connectorName = connectorName();
     Preconditions.checkNotNull(connectorName, "Connector name cannot be null");
-    return DEFAULT_CONTROL_GROUP_PREFIX + connectorName;
+    return DEFAULT_CONTROL_GROUP_PREFIX + connectorName + DEFAULT_COORDINATOR_CONTROL_GROUP_SUFFIX;
   }
 
   public String connectGroupId() {

@@ -300,7 +300,7 @@ class CommitterImplTest {
 
     whenAdminListConsumerGroupOffsetsThenReturn(
         ImmutableMap.of(
-            config.controlGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L),
+            config.connectGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L),
             config.connectGroupId(), ImmutableMap.of(SOURCE_TP0, 90L, SOURCE_TP1, 80L)));
 
     try (CommitterImpl ignored =
@@ -320,7 +320,7 @@ class CommitterImplTest {
 
     whenAdminListConsumerGroupOffsetsThenReturn(
         ImmutableMap.of(
-            config.controlGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
+            CONFIG.connectGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
 
     TerminatedCoordinatorThreadFactory coordinatorThreadFactory =
         new TerminatedCoordinatorThreadFactory();
@@ -352,7 +352,7 @@ class CommitterImplTest {
 
     whenAdminListConsumerGroupOffsetsThenReturn(
         ImmutableMap.of(
-            CONFIG.controlGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
+            CONFIG.connectGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
 
     CommittableSupplier committableSupplier =
         () -> {
@@ -379,7 +379,7 @@ class CommitterImplTest {
 
     whenAdminListConsumerGroupOffsetsThenReturn(
         ImmutableMap.of(
-            CONFIG.controlGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
+            CONFIG.connectGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
 
     CommittableSupplier committableSupplier =
         () -> {
@@ -399,7 +399,7 @@ class CommitterImplTest {
               UUID.randomUUID().toString(),
               AvroUtil.encode(
                   new Event(
-                      CONFIG.controlGroupId(),
+                      CONFIG.connectGroupId(),
                       new CommitComplete(UUID.randomUUID(), offsetDateTime(100L))))));
 
       committer.commit(committableSupplier);
@@ -418,7 +418,7 @@ class CommitterImplTest {
 
     whenAdminListConsumerGroupOffsetsThenReturn(
         ImmutableMap.of(
-            CONFIG.controlGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
+            CONFIG.connectGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
 
     List<DataFile> dataFiles = ImmutableList.of(createDataFile());
     List<DeleteFile> deleteFiles = ImmutableList.of();
@@ -444,7 +444,7 @@ class CommitterImplTest {
               UUID.randomUUID().toString(),
               AvroUtil.encode(
                   new Event(
-                      CONFIG.controlGroupId(),
+                      CONFIG.connectGroupId(),
                       new StartCommit(commitId)))));
 
       committer.commit(committableSupplier);
@@ -468,7 +468,7 @@ class CommitterImplTest {
       Map<TopicPartition, OffsetAndMetadata> expectedConsumerOffset =
           ImmutableMap.of(SOURCE_TP0, new OffsetAndMetadata(100L));
       assertThat(producer.consumerGroupOffsetsHistory().get(0))
-          .isEqualTo(ImmutableMap.of(CONFIG.controlGroupId(), expectedConsumerOffset));
+          .isEqualTo(ImmutableMap.of(CONFIG.connectGroupId(), expectedConsumerOffset));
       assertThat(producer.consumerGroupOffsetsHistory().get(1))
           .isEqualTo(ImmutableMap.of(CONFIG.connectGroupId(), expectedConsumerOffset));
     }
@@ -484,7 +484,7 @@ class CommitterImplTest {
 
     whenAdminListConsumerGroupOffsetsThenReturn(
         ImmutableMap.of(
-            CONFIG.controlGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
+            CONFIG.connectGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
 
     CommittableSupplier committableSupplier =
         () -> new Committable(ImmutableMap.of(), ImmutableList.of());
@@ -502,7 +502,7 @@ class CommitterImplTest {
               UUID.randomUUID().toString(),
               AvroUtil.encode(
                   new Event(
-                      CONFIG.controlGroupId(),
+                      CONFIG.connectGroupId(),
                       new StartCommit(commitId)))));
 
 
@@ -536,7 +536,7 @@ class CommitterImplTest {
 
     whenAdminListConsumerGroupOffsetsThenReturn(
         ImmutableMap.of(
-            CONFIG.controlGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
+            CONFIG.connectGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
 
     List<DataFile> dataFiles = ImmutableList.of(createDataFile());
     List<DeleteFile> deleteFiles = ImmutableList.of();
@@ -561,7 +561,7 @@ class CommitterImplTest {
               UUID.randomUUID().toString(),
               AvroUtil.encode(
                   new Event(
-                      CONFIG.controlGroupId(),
+                      CONFIG.connectGroupId(),
                       new StartCommit(commitId)))));
 
       committer.commit(committableSupplier);
@@ -587,7 +587,7 @@ class CommitterImplTest {
       Map<TopicPartition, OffsetAndMetadata> expectedConsumerOffset =
           ImmutableMap.of(sourceTp1, new OffsetAndMetadata(100L));
       assertThat(producer.consumerGroupOffsetsHistory().get(0))
-          .isEqualTo(ImmutableMap.of(CONFIG.controlGroupId(), expectedConsumerOffset));
+          .isEqualTo(ImmutableMap.of(CONFIG.connectGroupId(), expectedConsumerOffset));
       assertThat(producer.consumerGroupOffsetsHistory().get(1))
           .isEqualTo(ImmutableMap.of(CONFIG.connectGroupId(), expectedConsumerOffset));
     }
