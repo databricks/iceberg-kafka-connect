@@ -45,7 +45,7 @@ jobs:
           fetch-depth: 0 # for Gradle/Nebula
 
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
+        uses: gradle/wrapper-validation-action@v2
 
       - name: Build & Test java services
         uses: gradle/gradle-build-action@v2.4.2
