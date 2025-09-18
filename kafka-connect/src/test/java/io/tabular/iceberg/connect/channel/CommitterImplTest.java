@@ -25,7 +25,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.tabular.iceberg.connect.IcebergSinkConfig;
@@ -63,7 +62,9 @@ import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.ListConsumerGroupOffsetsOptions;
 import org.apache.kafka.clients.admin.ListConsumerGroupOffsetsResult;
 import org.apache.kafka.clients.admin.internals.CoordinatorKey;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.MockConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.clients.consumer.OffsetResetStrategy;
@@ -72,14 +73,18 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.requests.FindCoordinatorRequest;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.connect.runtime.WorkerSinkTaskContext;
 import org.apache.kafka.connect.sink.SinkTaskContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+
+import java.util.Collection;
+import java.util.Properties;
 
 class CommitterImplTest {
 
@@ -147,10 +152,14 @@ class CommitterImplTest {
 
   private static final IcebergSinkConfig CONFIG = makeConfig(1);
 
-  private SinkTaskContext mockContext() {
-    SinkTaskContext mockContext = mock(SinkTaskContext.class);
-    when(mockContext.assignment()).thenReturn(ASSIGNED_SOURCE_TOPIC_PARTITIONS);
-    return mockContext;
+  private WorkerSinkTaskContext workerSinkTaskContext(IcebergSinkConfig config, Collection<TopicPartition> assignedSourceTopicPartitions) {
+    Properties props = new Properties();
+    props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+    props.put(ConsumerConfig.GROUP_ID_CONFIG, config.connectGroupId());
+    KafkaConsumer<byte[], byte[]> kafkaConsumer = new KafkaConsumer<>(props, new ByteArrayDeserializer(), new ByteArrayDeserializer());
+    kafkaConsumer.assign(assignedSourceTopicPartitions);
+
+    return new WorkerSinkTaskContext(kafkaConsumer, null, null);
   }
 
   private static DynConstructors.Ctor<CoordinatorKey> ctorCoordinatorKey() {
@@ -275,7 +284,7 @@ class CommitterImplTest {
                             new TopicPartition(x.topic(), x.partition()),
                             Pair.of(x.offset(), x.timestamp())))
                 .collect(Collectors.toList()))
-        .isEqualTo(
+        .containsExactlyInAnyOrderElementsOf(
             expectedAssignments.entrySet().stream()
                 .map(e -> Pair.of(e.getKey(), e.getValue()))
                 .collect(Collectors.toList()));
@@ -286,41 +295,13 @@ class CommitterImplTest {
   }
 
   @Test
-  public void
-      testShouldRewindOffsetsToStableControlGroupConsumerOffsetsForAssignedPartitionsOnConstruction()
-          throws IOException {
-    SinkTaskContext mockContext = mockContext();
-
-    ArgumentCaptor<Map<TopicPartition, Long>> offsetArgumentCaptor =
-        ArgumentCaptor.forClass(Map.class);
-
-    IcebergSinkConfig config = makeConfig(1);
-
-    NoOpCoordinatorThreadFactory coordinatorThreadFactory = new NoOpCoordinatorThreadFactory();
-
-    whenAdminListConsumerGroupOffsetsThenReturn(
-        ImmutableMap.of(
-            config.controlGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L),
-            config.connectGroupId(), ImmutableMap.of(SOURCE_TP0, 90L, SOURCE_TP1, 80L)));
-
-    try (CommitterImpl ignored =
-        new CommitterImpl(mockContext, config, kafkaClientFactory, coordinatorThreadFactory)) {
-      initConsumer();
-
-      verify(mockContext).offset(offsetArgumentCaptor.capture());
-      assertThat(offsetArgumentCaptor.getAllValues())
-          .isEqualTo(ImmutableList.of(ImmutableMap.of(SOURCE_TP0, 110L)));
-    }
-  }
-
-  @Test
   public void testCommitShouldThrowExceptionIfCoordinatorIsTerminated() throws IOException {
-    SinkTaskContext mockContext = mockContext();
     IcebergSinkConfig config = makeConfig(0);
+    WorkerSinkTaskContext context = workerSinkTaskContext(config, ASSIGNED_SOURCE_TOPIC_PARTITIONS);
 
     whenAdminListConsumerGroupOffsetsThenReturn(
         ImmutableMap.of(
-            config.controlGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
+            config.connectGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
 
     TerminatedCoordinatorThreadFactory coordinatorThreadFactory =
         new TerminatedCoordinatorThreadFactory();
@@ -331,7 +312,7 @@ class CommitterImplTest {
         };
 
     try (CommitterImpl committerImpl =
-        new CommitterImpl(mockContext, config, kafkaClientFactory, coordinatorThreadFactory)) {
+        new CommitterImpl(context, config, kafkaClientFactory, coordinatorThreadFactory)) {
       initConsumer();
       Committer committer = committerImpl;
 
@@ -346,13 +327,13 @@ class CommitterImplTest {
 
   @Test
   public void testCommitShouldDoNothingIfThereAreNoMessages() throws IOException {
-    SinkTaskContext mockContext = mockContext();
+    WorkerSinkTaskContext context = workerSinkTaskContext(CONFIG, ASSIGNED_SOURCE_TOPIC_PARTITIONS);
 
     NoOpCoordinatorThreadFactory coordinatorThreadFactory = new NoOpCoordinatorThreadFactory();
 
     whenAdminListConsumerGroupOffsetsThenReturn(
         ImmutableMap.of(
-            CONFIG.controlGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
+            CONFIG.connectGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
 
     CommittableSupplier committableSupplier =
         () -> {
@@ -360,7 +341,7 @@ class CommitterImplTest {
         };
 
     try (CommitterImpl committerImpl =
-        new CommitterImpl(mockContext, CONFIG, kafkaClientFactory, coordinatorThreadFactory)) {
+        new CommitterImpl(context, CONFIG, kafkaClientFactory, coordinatorThreadFactory)) {
       initConsumer();
       Committer committer = committerImpl;
 
@@ -373,13 +354,13 @@ class CommitterImplTest {
 
   @Test
   public void testCommitShouldDoNothingIfThereIsNoCommitRequestMessage() throws IOException {
-    SinkTaskContext mockContext = mockContext();
+    WorkerSinkTaskContext context = workerSinkTaskContext(CONFIG, ASSIGNED_SOURCE_TOPIC_PARTITIONS);
 
     NoOpCoordinatorThreadFactory coordinatorThreadFactory = new NoOpCoordinatorThreadFactory();
 
     whenAdminListConsumerGroupOffsetsThenReturn(
         ImmutableMap.of(
-            CONFIG.controlGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
+            CONFIG.connectGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
 
     CommittableSupplier committableSupplier =
         () -> {
@@ -387,7 +368,7 @@ class CommitterImplTest {
         };
 
     try (CommitterImpl committerImpl =
-        new CommitterImpl(mockContext, CONFIG, kafkaClientFactory, coordinatorThreadFactory)) {
+        new CommitterImpl(context, CONFIG, kafkaClientFactory, coordinatorThreadFactory)) {
       initConsumer();
       Committer committer = committerImpl;
 
@@ -411,14 +392,14 @@ class CommitterImplTest {
 
   @Test
   public void testCommitShouldRespondToCommitRequest() throws IOException {
-    SinkTaskContext mockContext = mockContext();
+    WorkerSinkTaskContext context = workerSinkTaskContext(CONFIG, ASSIGNED_SOURCE_TOPIC_PARTITIONS);
 
     NoOpCoordinatorThreadFactory coordinatorThreadFactory = new NoOpCoordinatorThreadFactory();
     UUID commitId = UUID.randomUUID();
 
     whenAdminListConsumerGroupOffsetsThenReturn(
         ImmutableMap.of(
-            CONFIG.controlGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
+            CONFIG.connectGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
 
     List<DataFile> dataFiles = ImmutableList.of(createDataFile());
     List<DeleteFile> deleteFiles = ImmutableList.of();
@@ -432,7 +413,7 @@ class CommitterImplTest {
                     new WriterResult(TABLE_1_IDENTIFIER, dataFiles, deleteFiles, partitionStruct)));
 
     try (CommitterImpl committerImpl =
-        new CommitterImpl(mockContext, CONFIG, kafkaClientFactory, coordinatorThreadFactory)) {
+        new CommitterImpl(context, CONFIG, kafkaClientFactory, coordinatorThreadFactory)) {
       initConsumer();
       Committer committer = committerImpl;
 
@@ -464,19 +445,17 @@ class CommitterImplTest {
           commitId,
           ImmutableMap.of(SOURCE_TP0, Pair.of(100L, offsetDateTime(200L))));
 
-      assertThat(producer.consumerGroupOffsetsHistory()).hasSize(2);
+      assertThat(producer.consumerGroupOffsetsHistory()).hasSize(1);
       Map<TopicPartition, OffsetAndMetadata> expectedConsumerOffset =
           ImmutableMap.of(SOURCE_TP0, new OffsetAndMetadata(100L));
       assertThat(producer.consumerGroupOffsetsHistory().get(0))
-          .isEqualTo(ImmutableMap.of(CONFIG.controlGroupId(), expectedConsumerOffset));
-      assertThat(producer.consumerGroupOffsetsHistory().get(1))
           .isEqualTo(ImmutableMap.of(CONFIG.connectGroupId(), expectedConsumerOffset));
     }
   }
 
   @Test
   public void testCommitWhenCommittableIsEmpty() throws IOException {
-    SinkTaskContext mockContext = mockContext();
+    WorkerSinkTaskContext context = workerSinkTaskContext(CONFIG, ASSIGNED_SOURCE_TOPIC_PARTITIONS);
 
     NoOpCoordinatorThreadFactory coordinatorThreadFactory = new NoOpCoordinatorThreadFactory();
 
@@ -484,13 +463,13 @@ class CommitterImplTest {
 
     whenAdminListConsumerGroupOffsetsThenReturn(
         ImmutableMap.of(
-            CONFIG.controlGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
+            CONFIG.connectGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
 
     CommittableSupplier committableSupplier =
         () -> new Committable(ImmutableMap.of(), ImmutableList.of());
 
     try (CommitterImpl committerImpl =
-        new CommitterImpl(mockContext, CONFIG, kafkaClientFactory, coordinatorThreadFactory)) {
+        new CommitterImpl(context, CONFIG, kafkaClientFactory, coordinatorThreadFactory)) {
       initConsumer();
       Committer committer = committerImpl;
 
@@ -522,21 +501,15 @@ class CommitterImplTest {
 
   @Test
   public void testCommitShouldCommitOffsetsOnlyForPartitionsWeMadeProgressOn() throws IOException {
-    SinkTaskContext mockContext = mockContext();
-
     NoOpCoordinatorThreadFactory coordinatorThreadFactory = new NoOpCoordinatorThreadFactory();
 
-    TopicPartition sourceTp0 = new TopicPartition(SOURCE_TOPIC, 0);
-    TopicPartition sourceTp1 = new TopicPartition(SOURCE_TOPIC, 1);
-    Set<TopicPartition> sourceTopicPartitions = ImmutableSet.of(sourceTp0, sourceTp1);
-
-    when(mockContext.assignment()).thenReturn(sourceTopicPartitions);
+    WorkerSinkTaskContext context = workerSinkTaskContext(CONFIG, ImmutableList.of(SOURCE_TP0, SOURCE_TP1));
 
     UUID commitId = UUID.randomUUID();
 
     whenAdminListConsumerGroupOffsetsThenReturn(
         ImmutableMap.of(
-            CONFIG.controlGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
+            CONFIG.connectGroupId(), ImmutableMap.of(SOURCE_TP0, 110L, SOURCE_TP1, 100L)));
 
     List<DataFile> dataFiles = ImmutableList.of(createDataFile());
     List<DeleteFile> deleteFiles = ImmutableList.of();
@@ -544,12 +517,12 @@ class CommitterImplTest {
     CommittableSupplier committableSupplier =
         () ->
             new Committable(
-                ImmutableMap.of(sourceTp1, new Offset(100L, 200L)),
+                ImmutableMap.of(SOURCE_TP1, new Offset(100L, 200L)),
                 ImmutableList.of(
                     new WriterResult(TABLE_1_IDENTIFIER, dataFiles, deleteFiles, partitionStruct)));
 
     try (CommitterImpl committerImpl =
-        new CommitterImpl(mockContext, CONFIG, kafkaClientFactory, coordinatorThreadFactory)) {
+        new CommitterImpl(context, CONFIG, kafkaClientFactory, coordinatorThreadFactory)) {
       initConsumer();
       Committer committer = committerImpl;
 
@@ -580,15 +553,13 @@ class CommitterImplTest {
           producerId,
           commitId,
           ImmutableMap.of(
-              sourceTp0, Pair.of(null, null),
-              sourceTp1, Pair.of(100L, offsetDateTime(200L))));
+                  SOURCE_TP0, Pair.of(null, null),
+                  SOURCE_TP1, Pair.of(100L, offsetDateTime(200L))));
 
-      assertThat(producer.consumerGroupOffsetsHistory()).hasSize(2);
+      assertThat(producer.consumerGroupOffsetsHistory()).hasSize(1);
       Map<TopicPartition, OffsetAndMetadata> expectedConsumerOffset =
-          ImmutableMap.of(sourceTp1, new OffsetAndMetadata(100L));
+          ImmutableMap.of(SOURCE_TP1, new OffsetAndMetadata(100L));
       assertThat(producer.consumerGroupOffsetsHistory().get(0))
-          .isEqualTo(ImmutableMap.of(CONFIG.controlGroupId(), expectedConsumerOffset));
-      assertThat(producer.consumerGroupOffsetsHistory().get(1))
           .isEqualTo(ImmutableMap.of(CONFIG.connectGroupId(), expectedConsumerOffset));
     }
   }

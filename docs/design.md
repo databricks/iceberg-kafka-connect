@@ -73,11 +73,9 @@ There are two sets of offsets to manage, the offsets for the source topic(s) and
 
 #### Source topic
 
-The offsets for the source topic are managed by the workers. A worker sends its data files events and also commits the source offsets to a sink-managed consumer group within a Kafka transaction. All control topic consumers have isolation set to read only committed events. This ensures that files sent to the coordinator correspond to the source topic offsets that were stored.
+The offsets for the source topic are managed by the workers. A worker sends its data files events and also commits the source offsets to the Kafka Connect consumer group within a Kafka transaction. All control topic consumers have isolation set to read only committed events. This ensures that files sent to the coordinator correspond to the source topic offsets that were stored.
 
 The Kafka Connect managed offsets are kept in sync during flushes. The reason behind having a second consumer group, rather than only using the Kafka Connect consumer group, is to ensure that the offsets are committed in a transaction with the sending of the data files events. The Kafka Connect consumer group cannot be directly updated as it has active consumers.
-
-When a task starts up, the consumer offsets are initialized to those in the sink-managed consumer group rather than the Kafka Connect consumer group. The offsets in the Kafka Connect consumer group are only be used if offsets in the sink-managed group are missing. The offsets in the sink-managed group are the source of truth.
 
 #### Control topic
 
@@ -103,14 +101,16 @@ An upsert mode is also supported for data that is not in change data capture for
 
 The connector has exactly-once semantics. Workers ensure this by sending the data files events and committing offsets for the source topic within a Kafka transaction. The coordinator ensures this by setting the control topic consumer to only read committed events, and also by saving the offsets for the control topic as part of the Iceberg commit data.
 
-* The offsets for the source topic in the sink-managed consumer group correspond to the data files events successfully written to the control topic.
+* The offsets for the source topic in the Kafka Connect consumer group correspond to the data files events successfully written to the control topic.
 * The offsets for the control topic correspond to the Iceberg snapshot, as the offsets are stored in the snapshot metadata.
 
 ### Zombie fencing
 
-If a task encounters a very heavy GC cycle during a transaction that causes a pause longer than the consumer session timeout (45 seconds by default), a partition might be assigned to a different task even though the “zombie” is still alive (but in a degraded state).
-
-In this circumstance, the new worker starts reading from the current committed offsets. When the zombie starts processing again, it complete the commit. This could lead to duplicates in this extreme case. Zombie fencing will be targeted for a future release.
+If the task running the Coordinator process encounters a heavy GC cycle that causes a pause longer than the consumer session timeout (45 seconds by default), it may become a zombie. 
+In this scenario, Kafka Connect will replace that task with a new one even though the “zombie” is still alive (but in a degraded state).
+A new Coordinator process will begin processing datafiles from the control topic.
+When the zombie starts processing again later, it may commit a datafile that has already been committed by the new Coordinator process, leading to duplicates in this extreme case. 
+Coordinator zombie fencing will be targeted for a future release.
 
 ## Error Handling
 
@@ -120,7 +120,7 @@ All errors in the connector itself are non-retryable. This includes errors durin
 
 ### Worker fails during processing
 
-If a failure occurs on a worker while processing messages or writing files, an exception is thrown and the task restarts from the last Kafka offsets committed to the sink-managed consumer group. Any data that had been written since the last commit is left in place, uncommitted. New data files are written from the offsets, and only these will be committed. Table maintenance should be performed regularly to clean up the orphaned files.
+If a failure occurs on a worker while processing messages or writing files, an exception is thrown and the task restarts from the last Kafka offsets committed to the Kafka Connect managed consumer group. Any data that had been written since the last commit is left in place, uncommitted. New data files are written from the offsets, and only these will be committed. Table maintenance should be performed regularly to clean up the orphaned files.
 
 ### Worker fails to receive begin commit event
 
@@ -144,10 +144,10 @@ If the table is rolled back to an older snapshot, then that also rolls back to o
 
 * Optionally commit as unpartitioned to avoid many small files
 * More seamless snapshot rollback behavior
-* Zombie fencing during offset commit
 * Pluggable commit coordinator
   * Allow a backend to handle instead of requiring a control topic
 * Distribute commits across workers
+* Coordinator zombie fencing
 
 ## Alternatives Considered
 

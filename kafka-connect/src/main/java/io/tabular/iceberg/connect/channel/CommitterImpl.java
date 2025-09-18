@@ -19,7 +19,6 @@
 package io.tabular.iceberg.connect.channel;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 import io.tabular.iceberg.connect.IcebergSinkConfig;
 import io.tabular.iceberg.connect.data.Offset;
@@ -29,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import org.apache.iceberg.catalog.Catalog;
 import org.apache.iceberg.connect.events.DataComplete;
 import org.apache.iceberg.connect.events.DataWritten;
@@ -42,11 +40,8 @@ import org.apache.iceberg.relocated.com.google.common.annotations.VisibleForTest
 import org.apache.iceberg.relocated.com.google.common.collect.ImmutableList;
 import org.apache.iceberg.relocated.com.google.common.collect.ImmutableMap;
 import org.apache.iceberg.relocated.com.google.common.collect.Lists;
-import org.apache.kafka.clients.admin.ListConsumerGroupOffsetsOptions;
-import org.apache.kafka.clients.admin.ListConsumerGroupOffsetsResult;
 import org.apache.kafka.clients.consumer.ConsumerGroupMetadata;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.sink.SinkTaskContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +52,7 @@ public class CommitterImpl extends Channel implements Committer, AutoCloseable {
   private final SinkTaskContext context;
   private final IcebergSinkConfig config;
   private final Optional<CoordinatorThread> maybeCoordinatorThread;
+  private final ConsumerGroupMetadata consumerGroupMetadata;
 
   public CommitterImpl(SinkTaskContext context, IcebergSinkConfig config, Catalog catalog) {
     this(context, config, catalog, new KafkaClientFactory(config.kafkaProps()));
@@ -92,11 +88,14 @@ public class CommitterImpl extends Channel implements Committer, AutoCloseable {
 
     this.maybeCoordinatorThread = coordinatorThreadFactory.create(context, config);
 
-    // The source-of-truth for source-topic offsets is the control-group-id
-    Map<TopicPartition, Long> stableConsumerOffsets =
-        fetchStableConsumerOffsets(config.controlGroupId());
-    // Rewind kafka connect consumer to avoid duplicates
-    context.offset(stableConsumerOffsets);
+    ConsumerGroupMetadata groupMetadata;
+    try {
+      groupMetadata = KafkaUtils.consumerGroupMetadata(context);
+    } catch (IllegalArgumentException e) {
+      LOG.warn("Could not extract ConsumerGroupMetadata from consumer inside Kafka Connect, falling back to simple ConsumerGroupMetadata which can result in duplicates from zombie tasks");
+      groupMetadata = new ConsumerGroupMetadata(config.connectGroupId());
+    }
+    this.consumerGroupMetadata = groupMetadata;
 
     consumeAvailable(
         // initial poll with longer duration so the consumer will initialize...
@@ -106,20 +105,6 @@ public class CommitterImpl extends Channel implements Committer, AutoCloseable {
                 envelope,
                 // CommittableSupplier that always returns empty committables
                 () -> new Committable(ImmutableMap.of(), ImmutableList.of())));
-  }
-
-  private Map<TopicPartition, Long> fetchStableConsumerOffsets(String groupId) {
-    try {
-      ListConsumerGroupOffsetsResult response =
-          admin()
-              .listConsumerGroupOffsets(
-                  groupId, new ListConsumerGroupOffsetsOptions().requireStable(true));
-      return response.partitionsToOffsetAndMetadata().get().entrySet().stream()
-          .filter(entry -> context.assignment().contains(entry.getKey()))
-          .collect(toMap(Map.Entry::getKey, entry -> entry.getValue().offset()));
-    } catch (InterruptedException | ExecutionException e) {
-      throw new ConnectException(e);
-    }
   }
 
   private void throwExceptionIfCoordinatorIsTerminated() {
@@ -183,8 +168,7 @@ public class CommitterImpl extends Channel implements Committer, AutoCloseable {
     events.add(commitReady);
 
     Map<TopicPartition, Offset> offsets = committable.offsetsByTopicPartition();
-    send(events, offsets, new ConsumerGroupMetadata(config.controlGroupId()));
-    send(ImmutableList.of(), offsets, new ConsumerGroupMetadata(config.connectGroupId()));
+    send(events, offsets, consumerGroupMetadata);
   }
 
   @Override

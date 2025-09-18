@@ -19,11 +19,17 @@
 package io.tabular.iceberg.connect.channel;
 
 import java.util.concurrent.ExecutionException;
+
+import org.apache.iceberg.common.DynFields;
 import org.apache.iceberg.relocated.com.google.common.collect.ImmutableList;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.ConsumerGroupDescription;
 import org.apache.kafka.clients.admin.DescribeConsumerGroupsResult;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerGroupMetadata;
 import org.apache.kafka.connect.errors.ConnectException;
+import org.apache.kafka.connect.runtime.WorkerSinkTaskContext;
+import org.apache.kafka.connect.sink.SinkTaskContext;
 
 public class KafkaUtils {
 
@@ -38,6 +44,19 @@ public class KafkaUtils {
       throw new ConnectException(
           "Cannot retrieve members for consumer group: " + consumerGroupId, e);
     }
+  }
+
+  private static final String WorkerSinkTaskContextClassName =
+          WorkerSinkTaskContext.class.getName();
+
+  @SuppressWarnings("unchecked")
+  public static ConsumerGroupMetadata consumerGroupMetadata(SinkTaskContext sinkTaskContext) {
+    return ((Consumer<byte[], byte[]>) DynFields
+            .builder()
+            .hiddenImpl(WorkerSinkTaskContextClassName, "consumer")
+            .build(sinkTaskContext)
+            .get())
+            .groupMetadata();
   }
 
   private KafkaUtils() {}

@@ -66,14 +66,16 @@ By default the connector will attempt to use Kafka client config from the worker
 the control topic. If that config cannot be read for some reason, Kafka client settings
 can be set explicitly using `iceberg.kafka.*` properties.
 
-### Source topic offsets
+### Consumer offsets
 
-Source topic offsets are stored in two different consumer groups. The first is the sink-managed consumer
-group defined by the `iceberg.control.group-id` property. The second is the Kafka Connect managed
-consumer group which is named `connect-<connector name>` by default. The sink-managed consumer
-group is used by the sink to achieve exactly-once processing. The Kafka Connect consumer group is
-only used as a fallback if the sink-managed consumer group is missing. To reset the offsets,
-both consumer groups need to be reset.
+Source topic offsets are stored in Kafka Connect consumer group (which is named `connect-<connector name>` by default). 
+To reset the source topic offsets of the connector, the Kafka Connect consumer group needs to be reset.
+
+Control topic offsets are stored in a separate, sink-managed consumer group which we'll refer to as the Coordinator 
+consumer group. By default, this will be something like `cg-control-<connector-name>-coord` (unless you've configured 
+your connector with an explicit `iceberg.control.group-id` in which case it will be something like 
+`<iceberg.control.group-id>-coord`). To reset control topic offsets of the connector, the Coordinator consumer group
+needs to be reset.
 
 ### Message format
 
@@ -172,6 +174,105 @@ When using HDFS or Hive, the sink will initialize the Hadoop configuration. Firs
 from the classpath are loaded. Next, if `iceberg.hadoop-conf-dir` is specified, config files
 are loaded from that location. Finally, any `iceberg.hadoop.*` properties from the sink config are
 applied. When merging these, the order of precedence is sink config > config dir > classpath.
+
+# Upgrade
+
+## Upgrading from 0.6.X to 0.7.0
+
+Prior to version 0.7.0, the consumer offsets for the source topics were tracked by both the connect-group-id and the 
+control-group-id. It's important to note that the consumer offsets stored in the control-group-id were always considered 
+the "source-of-truth" and could be ahead of those tracked by the connect-group-id in exceptional, temporary situations.
+
+Starting from version 0.7.0, consumer offsets for the source topic are now tracked by the connect-group-id _exclusively_ 
+i.e. consumer offsets for the source topics will no longer be tracked by the control-group-id. This change is necessary
+to eliminate duplicates from zombie tasks. This means that the new "source-of-truth" for source topic consumer offsets 
+will be the connect-group-id. 
+
+Unfortunately, this is a breaking change and the upgrade process itself introduces a risk of duplicate records being written to Iceberg. 
+If you don't care about a small number of duplicates, you can just upgrade to version 0.7.0 just like any other patch release.
+However, if you do want to avoid duplicates during the upgrade process, please read the following general instructions for upgrading connectors safely.
+Please note that the following instructions are written assuming you are running Kafka Connect version 3.6.0.
+You may need to adjust the approach depending on your version of Kafka Connect and your deployment process.
+
+### Step 1 
+Stop all existing Iceberg Sink connectors running on the Kafka Connect cluster.  
+We need to stop the connectors because we will potentially be resetting consumer offsets for these connectors later and it is not possible to do this without stopping the connectors.
+
+You can stop a connector via the Kafka Connect REST API e.g.
+```bash
+curl -X PUT http://localhost:8083/connectors/<connector-name>/stop
+```
+
+### Step 2
+Fetch the current consumer offsets of the connect-group-id and the control-group-id.    
+The connect-group-id will be something like `connect-<connector-name>`.
+By default, the control-group-id will be something like `cg-control-<connector-name>` unless you've configured your connector with an explicit `iceberg.control.group-id`.
+
+Be careful not to confuse the control-group-id with the coordinator-consumer-group-id.
+The coordinator-consumer-group-id looks very similar to the control-group-id but has a `-coord` suffix e.g. `cg-control-<connector-name>-coord`.
+We are only interested in the **connect-group-id** and **control-group-id** for the purposes of this migration.
+You should _not_ interact with the **coordinator-consumer-group-id** for the purposes of this migration.
+
+You can retrieve the current consumer offsets for a given consumer-group-id using the `kafka-consumer-groups.sh` tool e.g.
+```bash
+./kafka-consumer-groups.sh \
+--bootstrap-server <bootstrap-server-url> \
+--describe \
+--group <consumer-group-id>
+
+# Consumer group 'connect-my-connector' has no active members.
+# GROUP                        TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+# connect-my-connector         my-topic-name   0          900             1000            100             -               -               -
+
+# Consumer group 'cg-control-my-connector' has no active members.
+# GROUP                        TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+# cg-control-my-connector      my-topic-name   0          1000            1000            0               -               -               -
+```
+
+### Step 3
+
+Move the consumer offsets for the connect-group-id forward so that they match those of the control-group-id, if necessary.   
+If the consumer offsets for the connect-group-id and the control-group-id are already the same, no action is needed for 
+this step. 
+If however you see that the connect-group-id consumer offsets are behind those of the control-group-id, you will need to 
+move the consumer offsets of the connect-group-id forward to match those of the control-group-id.
+Note: It is impossible for the consumer offsets of the connect-group-id to be ahead those of the control-group-id for 
+connector version < 0.7.0. 
+
+You can reset consumer offsets for the connect-group-id using the Kafka Connect REST API e.g.
+```bash
+curl -X PATCH \
+--header "Content-Type: application/json" \
+--data '{ "offsets": [ { "partition": { "kafka_topic": "my_topic_name", "kafka_partition": 0 }, "offset": { "kafka_offset": 1000 } } ] }' \
+localhost:8083/connectors/<connector-name>/offsets
+# {"message": "The Connect framework-managed offsets for this connector have been altered successfully. However, if this connector manages offsets externally, they will need to be manually altered in the system that the connector uses."}
+```
+
+### Step 4
+
+If you have successfully completed the above steps for all Iceberg Sink connectors running on the Kafka Connect cluster, 
+it is now safe to update the Iceberg Sink Connector version on all workers in the Kafka Connect cluster to version 0.7.0.
+
+You can check the installed connector version using the Kafka Connect REST API e.g.
+```bash
+curl localhost:8083/connector-plugins
+# [{"class": "io.tabular.iceberg.connect.IcebergSinkConnector", "type": "sink", "version": "1.5.2-kc-0.7.0"}]
+```
+
+### Step 5
+
+Once the Iceberg Sink Connector version on the cluster has been updated to 0.7.0, it is safe to resume the connectors 
+that we stopped in step 1.
+
+You can resume a connector via the Kafka Connect REST API e.g.
+```bash
+curl -X PUT http://localhost:8083/connectors/<connector-name>/resume
+```
+
+At this point, the upgrade process is complete.  
+
+Note: The now unused control-group-id will eventually be removed from Kafka automatically (by default after 7 days) so 
+no special action is necessary there.
 
 # Examples
 
