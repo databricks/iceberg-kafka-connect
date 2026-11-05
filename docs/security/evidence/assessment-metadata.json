@@ -1,0 +1,35 @@
+{
+  "assessment_date": "2026-11-05",
+  "source_commit": "4ac3ebb15f72ae1fd3459623c17b5b14daadab4c",
+  "artifact_sha256": "0deb3d936bce77a69bd969fcea01f529a1068254256ec1828577775d3f6bd414",
+  "artifact_bytes": 96987652,
+  "jar_count": 172,
+  "scanner": "Trivy 0.76.1",
+  "scanner_archive_sha256": "11a9b6cd2752011b54f01ea4bd0dbfa9f0c41dc6538d5a3f9d23955f471bf4e5",
+  "trivy_db": {
+    "Version": 2,
+    "NextUpdate": "2026-11-06T01:19:45.907162401Z",
+    "UpdatedAt": "2026-11-05T01:19:45.907162652Z",
+    "DownloadedAt": "2026-11-05T07:22:51.80998Z"
+  },
+  "trivy_java_db": {
+    "Version": 1,
+    "NextUpdate": "2026-11-08T01:08:50.735678108Z",
+    "UpdatedAt": "2026-11-05T01:08:50.735678238Z",
+    "DownloadedAt": "2026-11-05T07:23:56.823196Z"
+  },
+  "scan_command": "trivy rootfs --scanners vuln --disable-telemetry --skip-version-check --cache-dir /private/tmp/iceberg-security-review/cache --format json --output /private/tmp/iceberg-security-review/evidence/baseline-trivy.json --timeout 15m --no-progress /private/tmp/order-aggregator-legacy-trial/final-plugin",
+  "scope": "Checksum-verified local artifact and targeted repository review; no live AWS assessment or application tests",
+  "evidence_sha256": {
+    "baseline-findings.csv": "b08b41b103e82ca49babf3693ad4d7beac3eb34624b351b13eb11db346a38b03",
+    "baseline-gradle-dependencies.txt": "3dc859a0f99d0d6a3575d1fe87cfe8d11fafabebdc9de599375b43839a88a6f5",
+    "baseline-jar-sha256.csv": "24cdc5365e4ce773115c11e4e5702291b0d8dbcdb4b15cb6f0064c78174de253",
+    "baseline-trivy.json": "93c6dab9701fe3c9fc84febd196a1f78a242484160cf71c1a2871051fbcfaf6b",
+    "baseline.cdx.json": "cd5932521bb177c177fa0e23a2aa61c47693d509da89cb072dfda829f52c0b9d",
+    "decoder-bytecode.txt": "55296287bc4ec9ddefcc5065a7945f156168a23eb85500e770c120c4ee06f3bd",
+    "osv-avro-1.11.4.json": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "osv-iceberg-core-1.5.2.json": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "osv-kafka-clients-3.7.0.json": "ff50751f4d6de88d27588b46b8244eb45a284107330afad1690e588302f340a0",
+    "source-secrets-trivy.json": "769de03bfe2f9df714870bdca87a37870f4e47ac57d0b2061fb3743b729e43d1"
+  }
+}

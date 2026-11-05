@@ -1,0 +1,1128 @@
+JAR: iceberg-common-1.5.2.jar
+CLASS: org.apache.iceberg.common.DynClasses$Builder
+Compiled from "DynClasses.java"
+public class org.apache.iceberg.common.DynClasses$Builder {
+  private java.lang.ClassLoader loader;
+
+  private java.lang.Class<?> foundClass;
+
+  private boolean nullOk;
+
+  private java.util.Set<java.lang.String> classNames;
+
+  private org.apache.iceberg.common.DynClasses$Builder();
+    Code:
+       0: aload_0
+       1: invokespecial #2                  // Method java/lang/Object."<init>":()V
+       4: aload_0
+       5: invokestatic  #3                  // Method java/lang/Thread.currentThread:()Ljava/lang/Thread;
+       8: invokevirtual #4                  // Method java/lang/Thread.getContextClassLoader:()Ljava/lang/ClassLoader;
+      11: putfield      #5                  // Field loader:Ljava/lang/ClassLoader;
+      14: aload_0
+      15: aconst_null
+      16: putfield      #6                  // Field foundClass:Ljava/lang/Class;
+      19: aload_0
+      20: iconst_0
+      21: putfield      #7                  // Field nullOk:Z
+      24: aload_0
+      25: invokestatic  #8                  // Method org/apache/iceberg/relocated/com/google/common/collect/Sets.newLinkedHashSet:()Ljava/util/LinkedHashSet;
+      28: putfield      #9                  // Field classNames:Ljava/util/Set;
+      31: return
+
+  public org.apache.iceberg.common.DynClasses$Builder loader(java.lang.ClassLoader);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: putfield      #5                  // Field loader:Ljava/lang/ClassLoader;
+       5: aload_0
+       6: areturn
+
+  public org.apache.iceberg.common.DynClasses$Builder impl(java.lang.String);
+    Code:
+       0: aload_0
+       1: getfield      #9                  // Field classNames:Ljava/util/Set;
+       4: aload_1
+       5: invokeinterface #10,  2           // InterfaceMethod java/util/Set.add:(Ljava/lang/Object;)Z
+      10: pop
+      11: aload_0
+      12: getfield      #6                  // Field foundClass:Ljava/lang/Class;
+      15: ifnull        20
+      18: aload_0
+      19: areturn
+      20: aload_0
+      21: aload_1
+      22: iconst_1
+      23: aload_0
+      24: getfield      #5                  // Field loader:Ljava/lang/ClassLoader;
+      27: invokestatic  #11                 // Method java/lang/Class.forName:(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;
+      30: putfield      #6                  // Field foundClass:Ljava/lang/Class;
+      33: goto          37
+      36: astore_2
+      37: aload_0
+      38: areturn
+    Exception table:
+       from    to  target type
+          20    33    36   Class java/lang/ClassNotFoundException
+
+  public org.apache.iceberg.common.DynClasses$Builder orNull();
+    Code:
+       0: aload_0
+       1: iconst_1
+       2: putfield      #7                  // Field nullOk:Z
+       5: aload_0
+       6: areturn
+
+  public <S> java.lang.Class<? extends S> buildChecked() throws java.lang.ClassNotFoundException;
+    Code:
+       0: aload_0
+       1: getfield      #7                  // Field nullOk:Z
+       4: ifne          52
+       7: aload_0
+       8: getfield      #6                  // Field foundClass:Ljava/lang/Class;
+      11: ifnonnull     52
+      14: new           #12                 // class java/lang/ClassNotFoundException
+      17: dup
+      18: new           #13                 // class java/lang/StringBuilder
+      21: dup
+      22: invokespecial #14                 // Method java/lang/StringBuilder."<init>":()V
+      25: ldc           #15                 // String Cannot find class; alternatives:
+      27: invokevirtual #16                 // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      30: ldc           #17                 // String ,
+      32: invokestatic  #18                 // Method org/apache/iceberg/relocated/com/google/common/base/Joiner.on:(Ljava/lang/String;)Lorg/apache/iceberg/relocated/com/google/common/base/Joiner;
+      35: aload_0
+      36: getfield      #9                  // Field classNames:Ljava/util/Set;
+      39: invokevirtual #19                 // Method org/apache/iceberg/relocated/com/google/common/base/Joiner.join:(Ljava/lang/Iterable;)Ljava/lang/String;
+      42: invokevirtual #16                 // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      45: invokevirtual #20                 // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+      48: invokespecial #21                 // Method java/lang/ClassNotFoundException."<init>":(Ljava/lang/String;)V
+      51: athrow
+      52: aload_0
+      53: getfield      #6                  // Field foundClass:Ljava/lang/Class;
+      56: areturn
+
+  public <S> java.lang.Class<? extends S> build();
+    Code:
+       0: aload_0
+       1: getfield      #7                  // Field nullOk:Z
+       4: ifne          52
+       7: aload_0
+       8: getfield      #6                  // Field foundClass:Ljava/lang/Class;
+      11: ifnonnull     52
+      14: new           #22                 // class java/lang/RuntimeException
+      17: dup
+      18: new           #13                 // class java/lang/StringBuilder
+      21: dup
+      22: invokespecial #14                 // Method java/lang/StringBuilder."<init>":()V
+      25: ldc           #15                 // String Cannot find class; alternatives:
+      27: invokevirtual #16                 // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      30: ldc           #17                 // String ,
+      32: invokestatic  #18                 // Method org/apache/iceberg/relocated/com/google/common/base/Joiner.on:(Ljava/lang/String;)Lorg/apache/iceberg/relocated/com/google/common/base/Joiner;
+      35: aload_0
+      36: getfield      #9                  // Field classNames:Ljava/util/Set;
+      39: invokevirtual #19                 // Method org/apache/iceberg/relocated/com/google/common/base/Joiner.join:(Ljava/lang/Iterable;)Ljava/lang/String;
+      42: invokevirtual #16                 // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      45: invokevirtual #20                 // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+      48: invokespecial #23                 // Method java/lang/RuntimeException."<init>":(Ljava/lang/String;)V
+      51: athrow
+      52: aload_0
+      53: getfield      #6                  // Field foundClass:Ljava/lang/Class;
+      56: areturn
+
+  org.apache.iceberg.common.DynClasses$Builder(org.apache.iceberg.common.DynClasses$1);
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method "<init>":()V
+       4: return
+}
+
+JAR: iceberg-core-1.5.2.jar
+CLASS: org.apache.iceberg.avro.AvroEncoderUtil
+Compiled from "AvroEncoderUtil.java"
+public class org.apache.iceberg.avro.AvroEncoderUtil {
+  private static final byte[] MAGIC_BYTES;
+
+  private org.apache.iceberg.avro.AvroEncoderUtil();
+    Code:
+       0: aload_0
+       1: invokespecial #4                  // Method java/lang/Object."<init>":()V
+       4: return
+
+  public static <T> byte[] encode(T, org.apache.avro.Schema) throws java.io.IOException;
+    Code:
+       0: new           #5                  // class java/io/ByteArrayOutputStream
+       3: dup
+       4: invokespecial #6                  // Method java/io/ByteArrayOutputStream."<init>":()V
+       7: astore_2
+       8: aconst_null
+       9: astore_3
+      10: new           #7                  // class java/io/DataOutputStream
+      13: dup
+      14: aload_2
+      15: invokespecial #8                  // Method java/io/DataOutputStream."<init>":(Ljava/io/OutputStream;)V
+      18: astore        4
+      20: aload         4
+      22: getstatic     #9                  // Field MAGIC_BYTES:[B
+      25: invokevirtual #10                 // Method java/io/DataOutputStream.write:([B)V
+      28: aload         4
+      30: aload_1
+      31: invokevirtual #11                 // Method org/apache/avro/Schema.toString:()Ljava/lang/String;
+      34: invokevirtual #12                 // Method java/io/DataOutputStream.writeUTF:(Ljava/lang/String;)V
+      37: invokestatic  #13                 // Method org/apache/avro/io/EncoderFactory.get:()Lorg/apache/avro/io/EncoderFactory;
+      40: aload_2
+      41: aconst_null
+      42: invokevirtual #14                 // Method org/apache/avro/io/EncoderFactory.binaryEncoder:(Ljava/io/OutputStream;Lorg/apache/avro/io/BinaryEncoder;)Lorg/apache/avro/io/BinaryEncoder;
+      45: astore        5
+      47: new           #15                 // class org/apache/iceberg/avro/GenericAvroWriter
+      50: dup
+      51: aload_1
+      52: invokespecial #16                 // Method org/apache/iceberg/avro/GenericAvroWriter."<init>":(Lorg/apache/avro/Schema;)V
+      55: astore        6
+      57: aload         6
+      59: aload_0
+      60: aload         5
+      62: invokeinterface #17,  3           // InterfaceMethod org/apache/avro/io/DatumWriter.write:(Ljava/lang/Object;Lorg/apache/avro/io/Encoder;)V
+      67: aload         5
+      69: invokevirtual #18                 // Method org/apache/avro/io/BinaryEncoder.flush:()V
+      72: aload_2
+      73: invokevirtual #19                 // Method java/io/ByteArrayOutputStream.toByteArray:()[B
+      76: astore        7
+      78: aload_3
+      79: aload_2
+      80: invokestatic  #20                 // Method $closeResource:(Ljava/lang/Throwable;Ljava/lang/AutoCloseable;)V
+      83: aload         7
+      85: areturn
+      86: astore        4
+      88: aload         4
+      90: astore_3
+      91: aload         4
+      93: athrow
+      94: astore        8
+      96: aload_3
+      97: aload_2
+      98: invokestatic  #20                 // Method $closeResource:(Ljava/lang/Throwable;Ljava/lang/AutoCloseable;)V
+     101: aload         8
+     103: athrow
+    Exception table:
+       from    to  target type
+          10    78    86   Class java/lang/Throwable
+          10    78    94   any
+          86    96    94   any
+
+  public static <T> T decode(byte[]) throws java.io.IOException;
+    Code:
+       0: new           #21                 // class java/io/ByteArrayInputStream
+       3: dup
+       4: aload_0
+       5: iconst_0
+       6: aload_0
+       7: arraylength
+       8: invokespecial #22                 // Method java/io/ByteArrayInputStream."<init>":([BII)V
+      11: astore_1
+      12: aconst_null
+      13: astore_2
+      14: new           #23                 // class java/io/DataInputStream
+      17: dup
+      18: aload_1
+      19: invokespecial #24                 // Method java/io/DataInputStream."<init>":(Ljava/io/InputStream;)V
+      22: astore_3
+      23: aload_3
+      24: invokevirtual #25                 // Method java/io/DataInputStream.readByte:()B
+      27: istore        4
+      29: aload_3
+      30: invokevirtual #25                 // Method java/io/DataInputStream.readByte:()B
+      33: istore        5
+      35: iload         4
+      37: getstatic     #9                  // Field MAGIC_BYTES:[B
+      40: iconst_0
+      41: baload
+      42: if_icmpne     59
+      45: iload         5
+      47: getstatic     #9                  // Field MAGIC_BYTES:[B
+      50: iconst_1
+      51: baload
+      52: if_icmpne     59
+      55: iconst_1
+      56: goto          60
+      59: iconst_0
+      60: ldc           #26                 // String Unrecognized header bytes: 0x%02X 0x%02X
+      62: iload         4
+      64: iload         5
+      66: invokestatic  #27                 // Method org/apache/iceberg/relocated/com/google/common/base/Preconditions.checkState:(ZLjava/lang/String;II)V
+      69: new           #28                 // class org/apache/avro/Schema$Parser
+      72: dup
+      73: invokespecial #29                 // Method org/apache/avro/Schema$Parser."<init>":()V
+      76: aload_3
+      77: invokevirtual #30                 // Method java/io/DataInputStream.readUTF:()Ljava/lang/String;
+      80: invokevirtual #31                 // Method org/apache/avro/Schema$Parser.parse:(Ljava/lang/String;)Lorg/apache/avro/Schema;
+      83: astore        6
+      85: invokestatic  #32                 // Method org/apache/avro/io/DecoderFactory.get:()Lorg/apache/avro/io/DecoderFactory;
+      88: aload_1
+      89: aconst_null
+      90: invokevirtual #33                 // Method org/apache/avro/io/DecoderFactory.binaryDecoder:(Ljava/io/InputStream;Lorg/apache/avro/io/BinaryDecoder;)Lorg/apache/avro/io/BinaryDecoder;
+      93: astore        7
+      95: new           #34                 // class org/apache/iceberg/avro/GenericAvroReader
+      98: dup
+      99: aload         6
+     101: invokespecial #35                 // Method org/apache/iceberg/avro/GenericAvroReader."<init>":(Lorg/apache/avro/Schema;)V
+     104: astore        8
+     106: aload         8
+     108: aload         6
+     110: invokeinterface #36,  2           // InterfaceMethod org/apache/avro/io/DatumReader.setSchema:(Lorg/apache/avro/Schema;)V
+     115: aload         8
+     117: aconst_null
+     118: aload         7
+     120: invokeinterface #37,  3           // InterfaceMethod org/apache/avro/io/DatumReader.read:(Ljava/lang/Object;Lorg/apache/avro/io/Decoder;)Ljava/lang/Object;
+     125: astore        9
+     127: aload_2
+     128: aload_1
+     129: invokestatic  #20                 // Method $closeResource:(Ljava/lang/Throwable;Ljava/lang/AutoCloseable;)V
+     132: aload         9
+     134: areturn
+     135: astore_3
+     136: aload_3
+     137: astore_2
+     138: aload_3
+     139: athrow
+     140: astore        10
+     142: aload_2
+     143: aload_1
+     144: invokestatic  #20                 // Method $closeResource:(Ljava/lang/Throwable;Ljava/lang/AutoCloseable;)V
+     147: aload         10
+     149: athrow
+    Exception table:
+       from    to  target type
+          14   127   135   Class java/lang/Throwable
+          14   127   140   any
+         135   142   140   any
+
+  private static org.apache.avro.LogicalType lambda$static$0(org.apache.avro.Schema);
+    Code:
+       0: invokestatic  #38                 // Method org/apache/iceberg/avro/LogicalMap.get:()Lorg/apache/iceberg/avro/LogicalMap;
+       3: areturn
+
+  private static void $closeResource(java.lang.Throwable, java.lang.AutoCloseable);
+    Code:
+       0: aload_0
+       1: ifnull        22
+       4: aload_1
+       5: invokeinterface #1,  1            // InterfaceMethod java/lang/AutoCloseable.close:()V
+      10: goto          28
+      13: astore_2
+      14: aload_0
+      15: aload_2
+      16: invokevirtual #3                  // Method java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
+      19: goto          28
+      22: aload_1
+      23: invokeinterface #1,  1            // InterfaceMethod java/lang/AutoCloseable.close:()V
+      28: return
+    Exception table:
+       from    to  target type
+           4    10    13   Class java/lang/Throwable
+
+  static {};
+    Code:
+       0: ldc           #40                 // String map
+       2: invokedynamic #41,  0             // InvokeDynamic #0:fromSchema:()Lorg/apache/avro/LogicalTypes$LogicalTypeFactory;
+       7: invokestatic  #42                 // Method org/apache/avro/LogicalTypes.register:(Ljava/lang/String;Lorg/apache/avro/LogicalTypes$LogicalTypeFactory;)V
+      10: iconst_2
+      11: newarray       byte
+      13: dup
+      14: iconst_0
+      15: bipush        -62
+      17: bastore
+      18: dup
+      19: iconst_1
+      20: iconst_1
+      21: bastore
+      22: putstatic     #9                  // Field MAGIC_BYTES:[B
+      25: return
+}
+
+JAR: iceberg-core-1.5.2.jar
+CLASS: org.apache.iceberg.avro.GenericAvroReader$ResolvingReadBuilder
+Compiled from "GenericAvroReader.java"
+class org.apache.iceberg.avro.GenericAvroReader$ResolvingReadBuilder extends org.apache.iceberg.avro.AvroWithPartnerVisitor<org.apache.iceberg.types.Type, org.apache.iceberg.avro.ValueReader<?>> {
+  private final java.util.Map<org.apache.iceberg.types.Type, org.apache.avro.Schema> avroSchemas;
+
+  final org.apache.iceberg.avro.GenericAvroReader this$0;
+
+  private org.apache.iceberg.avro.GenericAvroReader$ResolvingReadBuilder(org.apache.iceberg.avro.GenericAvroReader, org.apache.iceberg.types.Types$StructType, java.lang.String);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: putfield      #2                  // Field this$0:Lorg/apache/iceberg/avro/GenericAvroReader;
+       5: aload_0
+       6: invokespecial #3                  // Method org/apache/iceberg/avro/AvroWithPartnerVisitor."<init>":()V
+       9: aload_0
+      10: aload_2
+      11: aload_3
+      12: invokestatic  #4                  // Method org/apache/iceberg/avro/AvroSchemaUtil.convertTypes:(Lorg/apache/iceberg/types/Types$StructType;Ljava/lang/String;)Ljava/util/Map;
+      15: putfield      #5                  // Field avroSchemas:Ljava/util/Map;
+      18: return
+
+  public org.apache.iceberg.avro.ValueReader<?> record(org.apache.iceberg.types.Type, org.apache.avro.Schema, java.util.List<org.apache.iceberg.avro.ValueReader<?>>);
+    Code:
+       0: aload_1
+       1: ifnull        13
+       4: aload_1
+       5: invokeinterface #6,  1            // InterfaceMethod org/apache/iceberg/types/Type.asStructType:()Lorg/apache/iceberg/types/Types$StructType;
+      10: goto          14
+      13: aconst_null
+      14: astore        4
+      16: aload_0
+      17: aload         4
+      19: invokespecial #7                  // Method idToPos:(Lorg/apache/iceberg/types/Types$StructType;)Ljava/util/Map;
+      22: astore        5
+      24: invokestatic  #8                  // Method org/apache/iceberg/relocated/com/google/common/collect/Lists.newArrayList:()Ljava/util/ArrayList;
+      27: astore        6
+      29: aload_2
+      30: invokevirtual #9                  // Method org/apache/avro/Schema.getFields:()Ljava/util/List;
+      33: astore        7
+      35: iconst_0
+      36: istore        8
+      38: iload         8
+      40: aload         7
+      42: invokeinterface #10,  1           // InterfaceMethod java/util/List.size:()I
+      47: if_icmpge     168
+      50: aload         7
+      52: iload         8
+      54: invokeinterface #11,  2           // InterfaceMethod java/util/List.get:(I)Ljava/lang/Object;
+      59: checkcast     #12                 // class org/apache/avro/Schema$Field
+      62: astore        9
+      64: aload_3
+      65: iload         8
+      67: invokeinterface #11,  2           // InterfaceMethod java/util/List.get:(I)Ljava/lang/Object;
+      72: checkcast     #13                 // class org/apache/iceberg/avro/ValueReader
+      75: astore        10
+      77: aload         9
+      79: invokestatic  #14                 // Method org/apache/iceberg/avro/AvroSchemaUtil.fieldId:(Lorg/apache/avro/Schema$Field;)Ljava/lang/Integer;
+      82: astore        11
+      84: aload         5
+      86: aload         11
+      88: invokeinterface #15,  2           // InterfaceMethod java/util/Map.remove:(Ljava/lang/Object;)Ljava/lang/Object;
+      93: checkcast     #16                 // class java/lang/Integer
+      96: astore        12
+      98: aload_0
+      99: getfield      #2                  // Field this$0:Lorg/apache/iceberg/avro/GenericAvroReader;
+     102: invokestatic  #17                 // Method org/apache/iceberg/avro/GenericAvroReader.access$100:(Lorg/apache/iceberg/avro/GenericAvroReader;)Ljava/util/Map;
+     105: aload         11
+     107: invokeinterface #18,  2           // InterfaceMethod java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
+     112: astore        13
+     114: aload         12
+     116: ifnull        147
+     119: aload         13
+     121: ifnull        147
+     124: aload         6
+     126: aload         12
+     128: aload         10
+     130: aload         13
+     132: invokestatic  #19                 // Method org/apache/iceberg/avro/ValueReaders.replaceWithConstant:(Lorg/apache/iceberg/avro/ValueReader;Ljava/lang/Object;)Lorg/apache/iceberg/avro/ValueReader;
+     135: invokestatic  #20                 // Method org/apache/iceberg/util/Pair.of:(Ljava/lang/Object;Ljava/lang/Object;)Lorg/apache/iceberg/util/Pair;
+     138: invokeinterface #21,  2           // InterfaceMethod java/util/List.add:(Ljava/lang/Object;)Z
+     143: pop
+     144: goto          162
+     147: aload         6
+     149: aload         12
+     151: aload         10
+     153: invokestatic  #20                 // Method org/apache/iceberg/util/Pair.of:(Ljava/lang/Object;Ljava/lang/Object;)Lorg/apache/iceberg/util/Pair;
+     156: invokeinterface #21,  2           // InterfaceMethod java/util/List.add:(Ljava/lang/Object;)Z
+     161: pop
+     162: iinc          8, 1
+     165: goto          38
+     168: aload         5
+     170: invokeinterface #22,  1           // InterfaceMethod java/util/Map.entrySet:()Ljava/util/Set;
+     175: invokeinterface #23,  1           // InterfaceMethod java/util/Set.iterator:()Ljava/util/Iterator;
+     180: astore        8
+     182: aload         8
+     184: invokeinterface #24,  1           // InterfaceMethod java/util/Iterator.hasNext:()Z
+     189: ifeq          420
+     192: aload         8
+     194: invokeinterface #25,  1           // InterfaceMethod java/util/Iterator.next:()Ljava/lang/Object;
+     199: checkcast     #26                 // class java/util/Map$Entry
+     202: astore        9
+     204: aload         9
+     206: invokeinterface #27,  1           // InterfaceMethod java/util/Map$Entry.getKey:()Ljava/lang/Object;
+     211: checkcast     #16                 // class java/lang/Integer
+     214: invokevirtual #28                 // Method java/lang/Integer.intValue:()I
+     217: istore        10
+     219: aload         9
+     221: invokeinterface #29,  1           // InterfaceMethod java/util/Map$Entry.getValue:()Ljava/lang/Object;
+     226: checkcast     #16                 // class java/lang/Integer
+     229: invokevirtual #28                 // Method java/lang/Integer.intValue:()I
+     232: istore        11
+     234: aload_0
+     235: getfield      #2                  // Field this$0:Lorg/apache/iceberg/avro/GenericAvroReader;
+     238: invokestatic  #17                 // Method org/apache/iceberg/avro/GenericAvroReader.access$100:(Lorg/apache/iceberg/avro/GenericAvroReader;)Ljava/util/Map;
+     241: iload         10
+     243: invokestatic  #30                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+     246: invokeinterface #18,  2           // InterfaceMethod java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
+     251: astore        12
+     253: aload         4
+     255: iload         10
+     257: invokevirtual #31                 // Method org/apache/iceberg/types/Types$StructType.field:(I)Lorg/apache/iceberg/types/Types$NestedField;
+     260: astore        13
+     262: aload         12
+     264: ifnull        291
+     267: aload         6
+     269: iload         11
+     271: invokestatic  #30                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+     274: aload         12
+     276: invokestatic  #32                 // Method org/apache/iceberg/avro/ValueReaders.constant:(Ljava/lang/Object;)Lorg/apache/iceberg/avro/ValueReader;
+     279: invokestatic  #20                 // Method org/apache/iceberg/util/Pair.of:(Ljava/lang/Object;Ljava/lang/Object;)Lorg/apache/iceberg/util/Pair;
+     282: invokeinterface #21,  2           // InterfaceMethod java/util/List.add:(Ljava/lang/Object;)Z
+     287: pop
+     288: goto          417
+     291: iload         10
+     293: getstatic     #33                 // Field org/apache/iceberg/MetadataColumns.IS_DELETED:Lorg/apache/iceberg/types/Types$NestedField;
+     296: invokevirtual #34                 // Method org/apache/iceberg/types/Types$NestedField.fieldId:()I
+     299: if_icmpne     328
+     302: aload         6
+     304: iload         11
+     306: invokestatic  #30                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+     309: iconst_0
+     310: invokestatic  #35                 // Method java/lang/Boolean.valueOf:(Z)Ljava/lang/Boolean;
+     313: invokestatic  #32                 // Method org/apache/iceberg/avro/ValueReaders.constant:(Ljava/lang/Object;)Lorg/apache/iceberg/avro/ValueReader;
+     316: invokestatic  #20                 // Method org/apache/iceberg/util/Pair.of:(Ljava/lang/Object;Ljava/lang/Object;)Lorg/apache/iceberg/util/Pair;
+     319: invokeinterface #21,  2           // InterfaceMethod java/util/List.add:(Ljava/lang/Object;)Z
+     324: pop
+     325: goto          417
+     328: iload         10
+     330: getstatic     #36                 // Field org/apache/iceberg/MetadataColumns.ROW_POSITION:Lorg/apache/iceberg/types/Types$NestedField;
+     333: invokevirtual #34                 // Method org/apache/iceberg/types/Types$NestedField.fieldId:()I
+     336: if_icmpne     361
+     339: aload         6
+     341: iload         11
+     343: invokestatic  #30                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+     346: invokestatic  #37                 // Method org/apache/iceberg/avro/ValueReaders.positions:()Lorg/apache/iceberg/avro/ValueReader;
+     349: invokestatic  #20                 // Method org/apache/iceberg/util/Pair.of:(Ljava/lang/Object;Ljava/lang/Object;)Lorg/apache/iceberg/util/Pair;
+     352: invokeinterface #21,  2           // InterfaceMethod java/util/List.add:(Ljava/lang/Object;)Z
+     357: pop
+     358: goto          417
+     361: aload         13
+     363: invokevirtual #38                 // Method org/apache/iceberg/types/Types$NestedField.isOptional:()Z
+     366: ifeq          392
+     369: aload         6
+     371: iload         11
+     373: invokestatic  #30                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+     376: aconst_null
+     377: invokestatic  #32                 // Method org/apache/iceberg/avro/ValueReaders.constant:(Ljava/lang/Object;)Lorg/apache/iceberg/avro/ValueReader;
+     380: invokestatic  #20                 // Method org/apache/iceberg/util/Pair.of:(Ljava/lang/Object;Ljava/lang/Object;)Lorg/apache/iceberg/util/Pair;
+     383: invokeinterface #21,  2           // InterfaceMethod java/util/List.add:(Ljava/lang/Object;)Z
+     388: pop
+     389: goto          417
+     392: new           #39                 // class java/lang/IllegalArgumentException
+     395: dup
+     396: ldc           #40                 // String Missing required field: %s
+     398: iconst_1
+     399: anewarray     #41                 // class java/lang/Object
+     402: dup
+     403: iconst_0
+     404: aload         13
+     406: invokevirtual #42                 // Method org/apache/iceberg/types/Types$NestedField.name:()Ljava/lang/String;
+     409: aastore
+     410: invokestatic  #43                 // Method java/lang/String.format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+     413: invokespecial #44                 // Method java/lang/IllegalArgumentException."<init>":(Ljava/lang/String;)V
+     416: athrow
+     417: goto          182
+     420: aload_0
+     421: aload         6
+     423: aload_0
+     424: getfield      #5                  // Field avroSchemas:Ljava/util/Map;
+     427: aload_1
+     428: invokeinterface #18,  2           // InterfaceMethod java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
+     433: checkcast     #45                 // class org/apache/avro/Schema
+     436: aload_2
+     437: invokevirtual #46                 // Method org/apache/avro/Schema.getFullName:()Ljava/lang/String;
+     440: invokespecial #47                 // Method recordReader:(Ljava/util/List;Lorg/apache/avro/Schema;Ljava/lang/String;)Lorg/apache/iceberg/avro/ValueReader;
+     443: areturn
+
+  private org.apache.iceberg.avro.ValueReader<?> recordReader(java.util.List<org.apache.iceberg.util.Pair<java.lang.Integer, org.apache.iceberg.avro.ValueReader<?>>>, org.apache.avro.Schema, java.lang.String);
+    Code:
+       0: aload_0
+       1: getfield      #2                  // Field this$0:Lorg/apache/iceberg/avro/GenericAvroReader;
+       4: invokestatic  #48                 // Method org/apache/iceberg/avro/GenericAvroReader.access$200:(Lorg/apache/iceberg/avro/GenericAvroReader;)Ljava/util/Map;
+       7: aload_3
+       8: aload_3
+       9: invokeinterface #49,  3           // InterfaceMethod java/util/Map.getOrDefault:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+      14: checkcast     #50                 // class java/lang/String
+      17: astore        4
+      19: aload         4
+      21: ifnull        70
+      24: invokestatic  #51                 // Method org/apache/iceberg/common/DynClasses.builder:()Lorg/apache/iceberg/common/DynClasses$Builder;
+      27: aload_0
+      28: getfield      #2                  // Field this$0:Lorg/apache/iceberg/avro/GenericAvroReader;
+      31: invokestatic  #52                 // Method org/apache/iceberg/avro/GenericAvroReader.access$300:(Lorg/apache/iceberg/avro/GenericAvroReader;)Ljava/lang/ClassLoader;
+      34: invokevirtual #53                 // Method org/apache/iceberg/common/DynClasses$Builder.loader:(Ljava/lang/ClassLoader;)Lorg/apache/iceberg/common/DynClasses$Builder;
+      37: aload         4
+      39: invokevirtual #54                 // Method org/apache/iceberg/common/DynClasses$Builder.impl:(Ljava/lang/String;)Lorg/apache/iceberg/common/DynClasses$Builder;
+      42: invokevirtual #55                 // Method org/apache/iceberg/common/DynClasses$Builder.buildChecked:()Ljava/lang/Class;
+      45: astore        5
+      47: ldc           #56                 // class org/apache/avro/generic/IndexedRecord
+      49: aload         5
+      51: invokevirtual #57                 // Method java/lang/Class.isAssignableFrom:(Ljava/lang/Class;)Z
+      54: ifeq          65
+      57: aload_2
+      58: aload         5
+      60: aload_1
+      61: invokestatic  #58                 // Method org/apache/iceberg/avro/ValueReaders.record:(Lorg/apache/avro/Schema;Ljava/lang/Class;Ljava/util/List;)Lorg/apache/iceberg/avro/ValueReader;
+      64: areturn
+      65: goto          70
+      68: astore        5
+      70: aload_2
+      71: aload_1
+      72: invokestatic  #60                 // Method org/apache/iceberg/avro/ValueReaders.record:(Lorg/apache/avro/Schema;Ljava/util/List;)Lorg/apache/iceberg/avro/ValueReader;
+      75: areturn
+    Exception table:
+       from    to  target type
+          24    64    68   Class java/lang/ClassNotFoundException
+
+  public org.apache.iceberg.avro.ValueReader<?> union(org.apache.iceberg.types.Type, org.apache.avro.Schema, java.util.List<org.apache.iceberg.avro.ValueReader<?>>);
+    Code:
+       0: aload_3
+       1: invokestatic  #61                 // Method org/apache/iceberg/avro/ValueReaders.union:(Ljava/util/List;)Lorg/apache/iceberg/avro/ValueReader;
+       4: areturn
+
+  public org.apache.iceberg.avro.ValueReader<?> arrayMap(org.apache.iceberg.types.Type, org.apache.avro.Schema, org.apache.iceberg.avro.ValueReader<?>, org.apache.iceberg.avro.ValueReader<?>);
+    Code:
+       0: aload_3
+       1: invokestatic  #62                 // Method org/apache/iceberg/avro/ValueReaders.utf8s:()Lorg/apache/iceberg/avro/ValueReader;
+       4: if_acmpne     16
+       7: invokestatic  #63                 // Method org/apache/iceberg/avro/ValueReaders.strings:()Lorg/apache/iceberg/avro/ValueReader;
+      10: aload         4
+      12: invokestatic  #64                 // Method org/apache/iceberg/avro/ValueReaders.arrayMap:(Lorg/apache/iceberg/avro/ValueReader;Lorg/apache/iceberg/avro/ValueReader;)Lorg/apache/iceberg/avro/ValueReader;
+      15: areturn
+      16: aload_3
+      17: aload         4
+      19: invokestatic  #64                 // Method org/apache/iceberg/avro/ValueReaders.arrayMap:(Lorg/apache/iceberg/avro/ValueReader;Lorg/apache/iceberg/avro/ValueReader;)Lorg/apache/iceberg/avro/ValueReader;
+      22: areturn
+
+  public org.apache.iceberg.avro.ValueReader<?> array(org.apache.iceberg.types.Type, org.apache.avro.Schema, org.apache.iceberg.avro.ValueReader<?>);
+    Code:
+       0: aload_3
+       1: invokestatic  #65                 // Method org/apache/iceberg/avro/ValueReaders.array:(Lorg/apache/iceberg/avro/ValueReader;)Lorg/apache/iceberg/avro/ValueReader;
+       4: areturn
+
+  public org.apache.iceberg.avro.ValueReader<?> map(org.apache.iceberg.types.Type, org.apache.avro.Schema, org.apache.iceberg.avro.ValueReader<?>);
+    Code:
+       0: invokestatic  #63                 // Method org/apache/iceberg/avro/ValueReaders.strings:()Lorg/apache/iceberg/avro/ValueReader;
+       3: aload_3
+       4: invokestatic  #66                 // Method org/apache/iceberg/avro/ValueReaders.map:(Lorg/apache/iceberg/avro/ValueReader;Lorg/apache/iceberg/avro/ValueReader;)Lorg/apache/iceberg/avro/ValueReader;
+       7: areturn
+
+  public org.apache.iceberg.avro.ValueReader<?> primitive(org.apache.iceberg.types.Type, org.apache.avro.Schema);
+    Code:
+       0: aload_2
+       1: invokevirtual #67                 // Method org/apache/avro/Schema.getLogicalType:()Lorg/apache/avro/LogicalType;
+       4: astore_3
+       5: aload_3
+       6: ifnull        283
+       9: aload_3
+      10: invokevirtual #68                 // Method org/apache/avro/LogicalType.getName:()Ljava/lang/String;
+      13: astore        4
+      15: iconst_m1
+      16: istore        5
+      18: aload         4
+      20: invokevirtual #69                 // Method java/lang/String.hashCode:()I
+      23: lookupswitch  { // 6
+            -752262865: 96
+               3076014: 80
+               3601339: 160
+            1542263633: 144
+            1922012870: 128
+            1922275037: 112
+               default: 173
+          }
+      80: aload         4
+      82: ldc           #70                 // String date
+      84: invokevirtual #71                 // Method java/lang/String.equals:(Ljava/lang/Object;)Z
+      87: ifeq          173
+      90: iconst_0
+      91: istore        5
+      93: goto          173
+      96: aload         4
+      98: ldc           #72                 // String time-micros
+     100: invokevirtual #71                 // Method java/lang/String.equals:(Ljava/lang/Object;)Z
+     103: ifeq          173
+     106: iconst_1
+     107: istore        5
+     109: goto          173
+     112: aload         4
+     114: ldc           #73                 // String timestamp-millis
+     116: invokevirtual #71                 // Method java/lang/String.equals:(Ljava/lang/Object;)Z
+     119: ifeq          173
+     122: iconst_2
+     123: istore        5
+     125: goto          173
+     128: aload         4
+     130: ldc           #74                 // String timestamp-micros
+     132: invokevirtual #71                 // Method java/lang/String.equals:(Ljava/lang/Object;)Z
+     135: ifeq          173
+     138: iconst_3
+     139: istore        5
+     141: goto          173
+     144: aload         4
+     146: ldc           #75                 // String decimal
+     148: invokevirtual #71                 // Method java/lang/String.equals:(Ljava/lang/Object;)Z
+     151: ifeq          173
+     154: iconst_4
+     155: istore        5
+     157: goto          173
+     160: aload         4
+     162: ldc           #76                 // String uuid
+     164: invokevirtual #71                 // Method java/lang/String.equals:(Ljava/lang/Object;)Z
+     167: ifeq          173
+     170: iconst_5
+     171: istore        5
+     173: iload         5
+     175: tableswitch   { // 0 to 5
+                     0: 212
+                     1: 216
+                     2: 220
+                     3: 233
+                     4: 237
+                     5: 252
+               default: 256
+          }
+     212: invokestatic  #77                 // Method org/apache/iceberg/avro/ValueReaders.ints:()Lorg/apache/iceberg/avro/ValueReader;
+     215: areturn
+     216: invokestatic  #78                 // Method org/apache/iceberg/avro/ValueReaders.longs:()Lorg/apache/iceberg/avro/ValueReader;
+     219: areturn
+     220: invokestatic  #78                 // Method org/apache/iceberg/avro/ValueReaders.longs:()Lorg/apache/iceberg/avro/ValueReader;
+     223: astore        6
+     225: aload         6
+     227: invokedynamic #79,  0             // InvokeDynamic #0:read:(Lorg/apache/iceberg/avro/ValueReader;)Lorg/apache/iceberg/avro/ValueReader;
+     232: areturn
+     233: invokestatic  #78                 // Method org/apache/iceberg/avro/ValueReaders.longs:()Lorg/apache/iceberg/avro/ValueReader;
+     236: areturn
+     237: aload_2
+     238: invokestatic  #80                 // Method org/apache/iceberg/avro/ValueReaders.decimalBytesReader:(Lorg/apache/avro/Schema;)Lorg/apache/iceberg/avro/ValueReader;
+     241: aload_3
+     242: checkcast     #81                 // class org/apache/avro/LogicalTypes$Decimal
+     245: invokevirtual #82                 // Method org/apache/avro/LogicalTypes$Decimal.getScale:()I
+     248: invokestatic  #83                 // Method org/apache/iceberg/avro/ValueReaders.decimal:(Lorg/apache/iceberg/avro/ValueReader;I)Lorg/apache/iceberg/avro/ValueReader;
+     251: areturn
+     252: invokestatic  #84                 // Method org/apache/iceberg/avro/ValueReaders.uuids:()Lorg/apache/iceberg/avro/ValueReader;
+     255: areturn
+     256: new           #39                 // class java/lang/IllegalArgumentException
+     259: dup
+     260: new           #85                 // class java/lang/StringBuilder
+     263: dup
+     264: invokespecial #86                 // Method java/lang/StringBuilder."<init>":()V
+     267: ldc           #87                 // String Unknown logical type:
+     269: invokevirtual #88                 // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+     272: aload_3
+     273: invokevirtual #89                 // Method java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+     276: invokevirtual #90                 // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+     279: invokespecial #44                 // Method java/lang/IllegalArgumentException."<init>":(Ljava/lang/String;)V
+     282: athrow
+     283: getstatic     #91                 // Field org/apache/iceberg/avro/GenericAvroReader$1.$SwitchMap$org$apache$avro$Schema$Type:[I
+     286: aload_2
+     287: invokevirtual #92                 // Method org/apache/avro/Schema.getType:()Lorg/apache/avro/Schema$Type;
+     290: invokevirtual #93                 // Method org/apache/avro/Schema$Type.ordinal:()I
+     293: iaload
+     294: tableswitch   { // 1 to 10
+                     1: 348
+                     2: 352
+                     3: 356
+                     4: 380
+                     5: 384
+                     6: 408
+                     7: 412
+                     8: 416
+                     9: 421
+                    10: 425
+               default: 433
+          }
+     348: invokestatic  #94                 // Method org/apache/iceberg/avro/ValueReaders.nulls:()Lorg/apache/iceberg/avro/ValueReader;
+     351: areturn
+     352: invokestatic  #95                 // Method org/apache/iceberg/avro/ValueReaders.booleans:()Lorg/apache/iceberg/avro/ValueReader;
+     355: areturn
+     356: aload_1
+     357: ifnull        376
+     360: aload_1
+     361: invokeinterface #96,  1           // InterfaceMethod org/apache/iceberg/types/Type.typeId:()Lorg/apache/iceberg/types/Type$TypeID;
+     366: getstatic     #97                 // Field org/apache/iceberg/types/Type$TypeID.LONG:Lorg/apache/iceberg/types/Type$TypeID;
+     369: if_acmpne     376
+     372: invokestatic  #98                 // Method org/apache/iceberg/avro/ValueReaders.intsAsLongs:()Lorg/apache/iceberg/avro/ValueReader;
+     375: areturn
+     376: invokestatic  #77                 // Method org/apache/iceberg/avro/ValueReaders.ints:()Lorg/apache/iceberg/avro/ValueReader;
+     379: areturn
+     380: invokestatic  #78                 // Method org/apache/iceberg/avro/ValueReaders.longs:()Lorg/apache/iceberg/avro/ValueReader;
+     383: areturn
+     384: aload_1
+     385: ifnull        404
+     388: aload_1
+     389: invokeinterface #96,  1           // InterfaceMethod org/apache/iceberg/types/Type.typeId:()Lorg/apache/iceberg/types/Type$TypeID;
+     394: getstatic     #99                 // Field org/apache/iceberg/types/Type$TypeID.DOUBLE:Lorg/apache/iceberg/types/Type$TypeID;
+     397: if_acmpne     404
+     400: invokestatic  #100                // Method org/apache/iceberg/avro/ValueReaders.floatsAsDoubles:()Lorg/apache/iceberg/avro/ValueReader;
+     403: areturn
+     404: invokestatic  #101                // Method org/apache/iceberg/avro/ValueReaders.floats:()Lorg/apache/iceberg/avro/ValueReader;
+     407: areturn
+     408: invokestatic  #102                // Method org/apache/iceberg/avro/ValueReaders.doubles:()Lorg/apache/iceberg/avro/ValueReader;
+     411: areturn
+     412: invokestatic  #62                 // Method org/apache/iceberg/avro/ValueReaders.utf8s:()Lorg/apache/iceberg/avro/ValueReader;
+     415: areturn
+     416: aload_2
+     417: invokestatic  #103                // Method org/apache/iceberg/avro/ValueReaders.fixed:(Lorg/apache/avro/Schema;)Lorg/apache/iceberg/avro/ValueReader;
+     420: areturn
+     421: invokestatic  #104                // Method org/apache/iceberg/avro/ValueReaders.byteBuffers:()Lorg/apache/iceberg/avro/ValueReader;
+     424: areturn
+     425: aload_2
+     426: invokevirtual #105                // Method org/apache/avro/Schema.getEnumSymbols:()Ljava/util/List;
+     429: invokestatic  #106                // Method org/apache/iceberg/avro/ValueReaders.enums:(Ljava/util/List;)Lorg/apache/iceberg/avro/ValueReader;
+     432: areturn
+     433: new           #39                 // class java/lang/IllegalArgumentException
+     436: dup
+     437: new           #85                 // class java/lang/StringBuilder
+     440: dup
+     441: invokespecial #86                 // Method java/lang/StringBuilder."<init>":()V
+     444: ldc           #107                // String Unsupported type:
+     446: invokevirtual #88                 // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+     449: aload_2
+     450: invokevirtual #89                 // Method java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+     453: invokevirtual #90                 // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+     456: invokespecial #44                 // Method java/lang/IllegalArgumentException."<init>":(Ljava/lang/String;)V
+     459: athrow
+
+  private java.util.Map<java.lang.Integer, java.lang.Integer> idToPos(org.apache.iceberg.types.Types$StructType);
+    Code:
+       0: invokestatic  #108                // Method org/apache/iceberg/relocated/com/google/common/collect/Maps.newHashMap:()Ljava/util/HashMap;
+       3: astore_2
+       4: aload_1
+       5: ifnull        66
+       8: aload_1
+       9: invokevirtual #109                // Method org/apache/iceberg/types/Types$StructType.fields:()Ljava/util/List;
+      12: astore_3
+      13: iconst_0
+      14: istore        4
+      16: iload         4
+      18: aload_3
+      19: invokeinterface #10,  1           // InterfaceMethod java/util/List.size:()I
+      24: if_icmpge     66
+      27: aload_3
+      28: iload         4
+      30: invokeinterface #11,  2           // InterfaceMethod java/util/List.get:(I)Ljava/lang/Object;
+      35: checkcast     #110                // class org/apache/iceberg/types/Types$NestedField
+      38: astore        5
+      40: aload_2
+      41: aload         5
+      43: invokevirtual #34                 // Method org/apache/iceberg/types/Types$NestedField.fieldId:()I
+      46: invokestatic  #30                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+      49: iload         4
+      51: invokestatic  #30                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+      54: invokeinterface #111,  3          // InterfaceMethod java/util/Map.put:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+      59: pop
+      60: iinc          4, 1
+      63: goto          16
+      66: aload_2
+      67: areturn
+
+  public java.lang.Object primitive(java.lang.Object, org.apache.avro.Schema);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: checkcast     #112                // class org/apache/iceberg/types/Type
+       5: aload_2
+       6: invokevirtual #113                // Method primitive:(Lorg/apache/iceberg/types/Type;Lorg/apache/avro/Schema;)Lorg/apache/iceberg/avro/ValueReader;
+       9: areturn
+
+  public java.lang.Object map(java.lang.Object, org.apache.avro.Schema, java.lang.Object);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: checkcast     #112                // class org/apache/iceberg/types/Type
+       5: aload_2
+       6: aload_3
+       7: checkcast     #13                 // class org/apache/iceberg/avro/ValueReader
+      10: invokevirtual #114                // Method map:(Lorg/apache/iceberg/types/Type;Lorg/apache/avro/Schema;Lorg/apache/iceberg/avro/ValueReader;)Lorg/apache/iceberg/avro/ValueReader;
+      13: areturn
+
+  public java.lang.Object arrayMap(java.lang.Object, org.apache.avro.Schema, java.lang.Object, java.lang.Object);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: checkcast     #112                // class org/apache/iceberg/types/Type
+       5: aload_2
+       6: aload_3
+       7: checkcast     #13                 // class org/apache/iceberg/avro/ValueReader
+      10: aload         4
+      12: checkcast     #13                 // class org/apache/iceberg/avro/ValueReader
+      15: invokevirtual #115                // Method arrayMap:(Lorg/apache/iceberg/types/Type;Lorg/apache/avro/Schema;Lorg/apache/iceberg/avro/ValueReader;Lorg/apache/iceberg/avro/ValueReader;)Lorg/apache/iceberg/avro/ValueReader;
+      18: areturn
+
+  public java.lang.Object array(java.lang.Object, org.apache.avro.Schema, java.lang.Object);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: checkcast     #112                // class org/apache/iceberg/types/Type
+       5: aload_2
+       6: aload_3
+       7: checkcast     #13                 // class org/apache/iceberg/avro/ValueReader
+      10: invokevirtual #116                // Method array:(Lorg/apache/iceberg/types/Type;Lorg/apache/avro/Schema;Lorg/apache/iceberg/avro/ValueReader;)Lorg/apache/iceberg/avro/ValueReader;
+      13: areturn
+
+  public java.lang.Object union(java.lang.Object, org.apache.avro.Schema, java.util.List);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: checkcast     #112                // class org/apache/iceberg/types/Type
+       5: aload_2
+       6: aload_3
+       7: invokevirtual #117                // Method union:(Lorg/apache/iceberg/types/Type;Lorg/apache/avro/Schema;Ljava/util/List;)Lorg/apache/iceberg/avro/ValueReader;
+      10: areturn
+
+  public java.lang.Object record(java.lang.Object, org.apache.avro.Schema, java.util.List);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: checkcast     #112                // class org/apache/iceberg/types/Type
+       5: aload_2
+       6: aload_3
+       7: invokevirtual #118                // Method record:(Lorg/apache/iceberg/types/Type;Lorg/apache/avro/Schema;Ljava/util/List;)Lorg/apache/iceberg/avro/ValueReader;
+      10: areturn
+
+  private static java.lang.Long lambda$primitive$0(org.apache.iceberg.avro.ValueReader, org.apache.avro.io.Decoder, java.lang.Object) throws java.io.IOException;
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aconst_null
+       3: invokeinterface #119,  3          // InterfaceMethod org/apache/iceberg/avro/ValueReader.read:(Lorg/apache/avro/io/Decoder;Ljava/lang/Object;)Ljava/lang/Object;
+       8: checkcast     #120                // class java/lang/Long
+      11: invokevirtual #121                // Method java/lang/Long.longValue:()J
+      14: ldc2_w        #122                // long 1000l
+      17: lmul
+      18: invokestatic  #124                // Method java/lang/Long.valueOf:(J)Ljava/lang/Long;
+      21: areturn
+
+  org.apache.iceberg.avro.GenericAvroReader$ResolvingReadBuilder(org.apache.iceberg.avro.GenericAvroReader, org.apache.iceberg.types.Types$StructType, java.lang.String, org.apache.iceberg.avro.GenericAvroReader$1);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_2
+       3: aload_3
+       4: invokespecial #1                  // Method "<init>":(Lorg/apache/iceberg/avro/GenericAvroReader;Lorg/apache/iceberg/types/Types$StructType;Ljava/lang/String;)V
+       7: return
+}
+
+JAR: iceberg-kafka-connect-events-1.5.2.jar
+CLASS: org.apache.iceberg.connect.events.AvroUtil
+Compiled from "AvroUtil.java"
+public class org.apache.iceberg.connect.events.AvroUtil {
+  static final java.util.Map<java.lang.Integer, java.lang.String> FIELD_ID_TO_CLASS;
+
+  public static byte[] encode(org.apache.iceberg.connect.events.Event);
+    Code:
+       0: aload_0
+       1: aload_0
+       2: invokevirtual #1                  // Method org/apache/iceberg/connect/events/Event.getSchema:()Lorg/apache/avro/Schema;
+       5: invokestatic  #2                  // Method org/apache/iceberg/avro/AvroEncoderUtil.encode:(Ljava/lang/Object;Lorg/apache/avro/Schema;)[B
+       8: areturn
+       9: astore_1
+      10: new           #4                  // class java/io/UncheckedIOException
+      13: dup
+      14: aload_1
+      15: invokespecial #5                  // Method java/io/UncheckedIOException."<init>":(Ljava/io/IOException;)V
+      18: athrow
+    Exception table:
+       from    to  target type
+           0     8     9   Class java/io/IOException
+
+  public static org.apache.iceberg.connect.events.Event decode(byte[]);
+    Code:
+       0: aload_0
+       1: invokestatic  #6                  // Method org/apache/iceberg/avro/AvroEncoderUtil.decode:([B)Ljava/lang/Object;
+       4: checkcast     #7                  // class org/apache/iceberg/connect/events/Event
+       7: astore_1
+       8: invokestatic  #8                  // Method org/apache/iceberg/data/avro/DecoderResolver.clearCache:()V
+      11: aload_1
+      12: areturn
+      13: astore_1
+      14: new           #4                  // class java/io/UncheckedIOException
+      17: dup
+      18: aload_1
+      19: invokespecial #5                  // Method java/io/UncheckedIOException."<init>":(Ljava/io/IOException;)V
+      22: athrow
+    Exception table:
+       from    to  target type
+           0    12    13   Class java/io/IOException
+
+  static org.apache.avro.Schema convert(org.apache.iceberg.types.Types$StructType, java.lang.Class<? extends org.apache.avro.generic.IndexedRecord>);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: getstatic     #9                  // Field FIELD_ID_TO_CLASS:Ljava/util/Map;
+       5: invokestatic  #10                 // Method convert:(Lorg/apache/iceberg/types/Types$StructType;Ljava/lang/Class;Ljava/util/Map;)Lorg/apache/avro/Schema;
+       8: areturn
+
+  static org.apache.avro.Schema convert(org.apache.iceberg.types.Types$StructType, java.lang.Class<? extends org.apache.avro.generic.IndexedRecord>, java.util.Map<java.lang.Integer, java.lang.String>);
+    Code:
+       0: aload_0
+       1: aload_0
+       2: aload_1
+       3: aload_2
+       4: invokedynamic #11,  0             // InvokeDynamic #0:apply:(Lorg/apache/iceberg/types/Types$StructType;Ljava/lang/Class;Ljava/util/Map;)Ljava/util/function/BiFunction;
+       9: invokestatic  #12                 // Method org/apache/iceberg/avro/AvroSchemaUtil.convert:(Lorg/apache/iceberg/types/Type;Ljava/util/function/BiFunction;)Lorg/apache/avro/Schema;
+      12: areturn
+
+  static int positionToId(int, org.apache.avro.Schema);
+    Code:
+       0: aload_1
+       1: invokevirtual #13                 // Method org/apache/avro/Schema.getFields:()Ljava/util/List;
+       4: astore_2
+       5: iload_0
+       6: iflt          23
+       9: iload_0
+      10: aload_2
+      11: invokeinterface #14,  1           // InterfaceMethod java/util/List.size:()I
+      16: if_icmpge     23
+      19: iconst_1
+      20: goto          24
+      23: iconst_0
+      24: new           #15                 // class java/lang/StringBuilder
+      27: dup
+      28: invokespecial #16                 // Method java/lang/StringBuilder."<init>":()V
+      31: ldc           #17                 // String Invalid field position:
+      33: invokevirtual #18                 // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      36: iload_0
+      37: invokevirtual #19                 // Method java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+      40: invokevirtual #20                 // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+      43: invokestatic  #21                 // Method org/apache/iceberg/relocated/com/google/common/base/Preconditions.checkArgument:(ZLjava/lang/Object;)V
+      46: aload_2
+      47: iload_0
+      48: invokeinterface #22,  2           // InterfaceMethod java/util/List.get:(I)Ljava/lang/Object;
+      53: checkcast     #23                 // class org/apache/avro/Schema$Field
+      56: ldc           #25                 // String field-id
+      58: invokevirtual #26                 // Method org/apache/avro/Schema$Field.getObjectProp:(Ljava/lang/String;)Ljava/lang/Object;
+      61: astore_3
+      62: aload_3
+      63: ifnonnull     70
+      66: iconst_m1
+      67: goto          77
+      70: aload_3
+      71: checkcast     #27                 // class java/lang/Integer
+      74: invokevirtual #28                 // Method java/lang/Integer.intValue:()I
+      77: ireturn
+
+  private org.apache.iceberg.connect.events.AvroUtil();
+    Code:
+       0: aload_0
+       1: invokespecial #29                 // Method java/lang/Object."<init>":()V
+       4: return
+
+  private static java.lang.String lambda$convert$0(org.apache.iceberg.types.Types$StructType, java.lang.Class, java.util.Map, java.lang.Integer, org.apache.iceberg.types.Types$StructType);
+    Code:
+       0: aload         4
+       2: aload_0
+       3: invokevirtual #30                 // Method org/apache/iceberg/types/Types$StructType.equals:(Ljava/lang/Object;)Z
+       6: ifeq          16
+       9: aload_1
+      10: invokevirtual #31                 // Method java/lang/Class.getName:()Ljava/lang/String;
+      13: goto          26
+      16: aload_2
+      17: aload_3
+      18: invokeinterface #32,  2           // InterfaceMethod java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
+      23: checkcast     #33                 // class java/lang/String
+      26: areturn
+
+  static {};
+    Code:
+       0: sipush        10102
+       3: invokestatic  #35                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+       6: ldc           #36                 // class org/apache/iceberg/connect/events/TopicPartitionOffset
+       8: invokevirtual #31                 // Method java/lang/Class.getName:()Ljava/lang/String;
+      11: bipush        102
+      13: invokestatic  #35                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+      16: ldc           #38                 // class org/apache/iceberg/PartitionData
+      18: invokevirtual #31                 // Method java/lang/Class.getName:()Ljava/lang/String;
+      21: sipush        10301
+      24: invokestatic  #35                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+      27: ldc           #40                 // class org/apache/iceberg/connect/events/TableReference
+      29: invokevirtual #31                 // Method java/lang/Class.getName:()Ljava/lang/String;
+      32: sipush        10303
+      35: invokestatic  #35                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+      38: ldc           #41                 // String org.apache.iceberg.GenericDataFile
+      40: sipush        10304
+      43: invokestatic  #35                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+      46: ldc           #42                 // String org.apache.iceberg.GenericDeleteFile
+      48: sipush        10401
+      51: invokestatic  #35                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+      54: ldc           #40                 // class org/apache/iceberg/connect/events/TableReference
+      56: invokevirtual #31                 // Method java/lang/Class.getName:()Ljava/lang/String;
+      59: invokestatic  #44                 // Method org/apache/iceberg/relocated/com/google/common/collect/ImmutableMap.of:(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lorg/apache/iceberg/relocated/com/google/common/collect/ImmutableMap;
+      62: putstatic     #9                  // Field FIELD_ID_TO_CLASS:Ljava/util/Map;
+      65: return
+}
+
+JAR: schema-registry-kafkaconnect-converter-1.1.27.jar
+CLASS: org.apache.avro.Schemas
+Compiled from "Schemas.java"
+public class org.apache.avro.Schemas {
+  public org.apache.avro.Schemas();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+       4: return
+
+  public static java.lang.String toString(org.apache.avro.Schema, java.util.Collection<org.apache.avro.Schema>);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: iconst_0
+       3: invokestatic  #7                  // Method toString:(Lorg/apache/avro/Schema;Ljava/util/Collection;Z)Ljava/lang/String;
+       6: areturn
+
+  public static java.lang.String toString(org.apache.avro.Schema, java.util.Collection<org.apache.avro.Schema>, boolean);
+    Code:
+       0: new           #13                 // class java/io/StringWriter
+       3: dup
+       4: invokespecial #15                 // Method java/io/StringWriter."<init>":()V
+       7: astore_3
+       8: getstatic     #16                 // Field org/apache/avro/Schema.FACTORY:Lcom/fasterxml/jackson/core/JsonFactory;
+      11: aload_3
+      12: invokevirtual #22                 // Method com/fasterxml/jackson/core/JsonFactory.createGenerator:(Ljava/io/Writer;)Lcom/fasterxml/jackson/core/JsonGenerator;
+      15: astore        4
+      17: iload_2
+      18: ifeq          27
+      21: aload         4
+      23: invokevirtual #28                 // Method com/fasterxml/jackson/core/JsonGenerator.useDefaultPrettyPrinter:()Lcom/fasterxml/jackson/core/JsonGenerator;
+      26: pop
+      27: new           #34                 // class org/apache/avro/Schema$Names
+      30: dup
+      31: invokespecial #36                 // Method org/apache/avro/Schema$Names."<init>":()V
+      34: astore        5
+      36: aload_1
+      37: ifnull        80
+      40: aload_1
+      41: invokeinterface #37,  1           // InterfaceMethod java/util/Collection.iterator:()Ljava/util/Iterator;
+      46: astore        6
+      48: aload         6
+      50: invokeinterface #43,  1           // InterfaceMethod java/util/Iterator.hasNext:()Z
+      55: ifeq          80
+      58: aload         6
+      60: invokeinterface #49,  1           // InterfaceMethod java/util/Iterator.next:()Ljava/lang/Object;
+      65: checkcast     #17                 // class org/apache/avro/Schema
+      68: astore        7
+      70: aload         5
+      72: aload         7
+      74: invokevirtual #53                 // Method org/apache/avro/Schema$Names.add:(Lorg/apache/avro/Schema;)V
+      77: goto          48
+      80: aload_0
+      81: aload         5
+      83: aload         4
+      85: invokevirtual #57                 // Method org/apache/avro/Schema.toJson:(Lorg/apache/avro/Schema$Names;Lcom/fasterxml/jackson/core/JsonGenerator;)V
+      88: aload         4
+      90: invokevirtual #61                 // Method com/fasterxml/jackson/core/JsonGenerator.flush:()V
+      93: aload_3
+      94: invokevirtual #64                 // Method java/io/StringWriter.toString:()Ljava/lang/String;
+      97: areturn
+      98: astore_3
+      99: new           #69                 // class org/apache/avro/AvroRuntimeException
+     102: dup
+     103: aload_3
+     104: invokespecial #71                 // Method org/apache/avro/AvroRuntimeException."<init>":(Ljava/lang/Throwable;)V
+     107: athrow
+    Exception table:
+       from    to  target type
+           0    97    98   Class java/io/IOException
+}

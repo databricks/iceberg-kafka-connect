@@ -1,0 +1,620 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. See https://docs.gradle.org/8.1.1/userguide/gradle_daemon.html#sec:disabling_the_daemon.
+Daemon will be stopped at the end of the build 
+
+> Configure project :
+Inferred project: source, version: 0.1.0-dev.320+4ac3ebb
+
+> Task :iceberg-kafka-connect-runtime:dependencies
+
+------------------------------------------------------------
+Project ':iceberg-kafka-connect-runtime'
+------------------------------------------------------------
+
+runtimeClasspath - Runtime classpath of source set 'main'.
++--- project :iceberg-kafka-connect
+|    +--- project :iceberg-kafka-connect-events
+|    |    +--- org.apache.iceberg:iceberg-core:1.5.2
+|    |    |    +--- org.apache.iceberg:iceberg-common:1.5.2
+|    |    |    |    \--- org.apache.iceberg:iceberg-bundled-guava:1.5.2
+|    |    |    +--- org.apache.iceberg:iceberg-bundled-guava:1.5.2
+|    |    |    +--- org.apache.avro:avro:1.11.3 -> 1.11.4
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-core:2.14.3 -> 2.17.2
+|    |    |    |    |    \--- com.fasterxml.jackson:jackson-bom:2.17.2
+|    |    |    |    |         +--- com.fasterxml.jackson.core:jackson-annotations:2.17.2 (c)
+|    |    |    |    |         +--- com.fasterxml.jackson.core:jackson-core:2.17.2 (c)
+|    |    |    |    |         +--- com.fasterxml.jackson.core:jackson-databind:2.17.2 (c)
+|    |    |    |    |         \--- com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.17.2 (c)
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-databind:2.14.3 -> 2.17.2
+|    |    |    |    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.17.2
+|    |    |    |    |    |    \--- com.fasterxml.jackson:jackson-bom:2.17.2 (*)
+|    |    |    |    |    +--- com.fasterxml.jackson.core:jackson-core:2.17.2 (*)
+|    |    |    |    |    \--- com.fasterxml.jackson:jackson-bom:2.17.2 (*)
+|    |    |    |    \--- org.apache.commons:commons-compress:1.26.2 -> 1.26.0
+|    |    |    |         +--- commons-io:commons-io:2.15.1
+|    |    |    |         \--- org.apache.commons:commons-lang3:3.14.0
+|    |    |    +--- io.airlift:aircompressor:0.26
+|    |    |    +--- org.apache.httpcomponents.client5:httpclient5:5.3.1
+|    |    |    |    +--- org.apache.httpcomponents.core5:httpcore5:5.2.4
+|    |    |    |    \--- org.apache.httpcomponents.core5:httpcore5-h2:5.2.4
+|    |    |    |         \--- org.apache.httpcomponents.core5:httpcore5:5.2.4
+|    |    |    +--- com.fasterxml.jackson:jackson-bom:2.14.2 -> 2.17.2 (*)
+|    |    |    +--- com.fasterxml.jackson.core:jackson-core:2.14.2 -> 2.17.2 (*)
+|    |    |    +--- com.fasterxml.jackson.core:jackson-databind:2.14.2 -> 2.17.2 (*)
+|    |    |    +--- com.github.ben-manes.caffeine:caffeine:2.9.3
+|    |    |    |    +--- org.checkerframework:checker-qual:3.19.0 -> 3.33.0
+|    |    |    |    \--- com.google.errorprone:error_prone_annotations:2.10.0 -> 2.18.0
+|    |    |    +--- org.roaringbitmap:RoaringBitmap:1.0.1
+|    |    |    \--- org.apache.iceberg:iceberg-api:1.5.2
+|    |    |         \--- org.apache.iceberg:iceberg-bundled-guava:1.5.2
+|    |    +--- org.apache.iceberg:iceberg-common:1.5.2 (*)
+|    |    +--- org.apache.iceberg:iceberg-bundled-guava:1.5.2
+|    |    \--- org.apache.avro:avro:1.11.3 -> 1.11.4 (*)
+|    +--- org.apache.iceberg:iceberg-api:1.5.2 (*)
+|    +--- org.apache.iceberg:iceberg-common:1.5.2 (*)
+|    +--- org.apache.iceberg:iceberg-core:1.5.2 (*)
+|    +--- org.apache.iceberg:iceberg-data:1.5.2
+|    |    +--- org.apache.iceberg:iceberg-bundled-guava:1.5.2
+|    |    +--- org.apache.iceberg:iceberg-core:1.5.2 (*)
+|    |    +--- org.apache.orc:orc-core:1.9.2
+|    |    |    +--- org.apache.orc:orc-shims:1.9.2
+|    |    |    +--- org.apache.commons:commons-lang3:3.12.0 -> 3.14.0
+|    |    |    +--- io.airlift:aircompressor:0.25 -> 0.26
+|    |    |    +--- org.jetbrains:annotations:17.0.0
+|    |    |    \--- org.threeten:threeten-extra:1.7.1
+|    |    +--- org.apache.parquet:parquet-avro:1.13.1
+|    |    |    +--- org.apache.parquet:parquet-column:1.13.1
+|    |    |    |    +--- org.apache.parquet:parquet-common:1.13.1
+|    |    |    |    |    \--- org.apache.parquet:parquet-format-structures:1.13.1
+|    |    |    |    +--- org.apache.parquet:parquet-encoding:1.13.1
+|    |    |    |    |    \--- org.apache.parquet:parquet-common:1.13.1 (*)
+|    |    |    |    \--- org.apache.yetus:audience-annotations:0.13.0
+|    |    |    +--- org.apache.parquet:parquet-hadoop:1.13.1
+|    |    |    |    +--- org.apache.parquet:parquet-column:1.13.1 (*)
+|    |    |    |    +--- org.apache.parquet:parquet-format-structures:1.13.1
+|    |    |    |    +--- org.apache.parquet:parquet-common:1.13.1 (*)
+|    |    |    |    +--- org.apache.parquet:parquet-jackson:1.13.1
+|    |    |    |    +--- org.xerial.snappy:snappy-java:1.1.8.3 -> 1.1.10.5
+|    |    |    |    +--- io.airlift:aircompressor:0.21 -> 0.26
+|    |    |    |    +--- commons-pool:commons-pool:1.6
+|    |    |    |    +--- com.github.luben:zstd-jni:1.5.0-1
+|    |    |    |    \--- org.apache.yetus:audience-annotations:0.13.0
+|    |    |    \--- org.apache.parquet:parquet-common:1.13.1 (*)
+|    |    \--- org.apache.iceberg:iceberg-api:1.5.2 (*)
+|    +--- org.apache.iceberg:iceberg-bundled-guava:1.5.2
+|    +--- org.apache.iceberg:iceberg-orc:1.5.2
+|    |    +--- org.apache.iceberg:iceberg-bundled-guava:1.5.2
+|    |    +--- org.apache.iceberg:iceberg-common:1.5.2 (*)
+|    |    +--- org.apache.iceberg:iceberg-core:1.5.2 (*)
+|    |    +--- org.apache.avro:avro:1.11.3 -> 1.11.4 (*)
+|    |    +--- org.apache.orc:orc-core:1.9.2 (*)
+|    |    \--- org.apache.iceberg:iceberg-api:1.5.2 (*)
+|    +--- org.apache.iceberg:iceberg-parquet:1.5.2
+|    |    +--- org.apache.iceberg:iceberg-bundled-guava:1.5.2
+|    |    +--- org.apache.iceberg:iceberg-core:1.5.2 (*)
+|    |    +--- org.apache.iceberg:iceberg-common:1.5.2 (*)
+|    |    +--- org.apache.parquet:parquet-avro:1.13.1 (*)
+|    |    \--- org.apache.iceberg:iceberg-api:1.5.2 (*)
+|    +--- org.apache.iceberg:iceberg-kafka-connect-events:1.5.2
+|    |    +--- org.apache.iceberg:iceberg-core:1.5.2 (*)
+|    |    +--- org.apache.iceberg:iceberg-common:1.5.2 (*)
+|    |    +--- org.apache.iceberg:iceberg-bundled-guava:1.5.2
+|    |    +--- org.apache.avro:avro:1.11.3 -> 1.11.4 (*)
+|    |    \--- org.apache.iceberg:iceberg-api:1.5.2 (*)
+|    +--- com.fasterxml.jackson.core:jackson-core:2.14.2 -> 2.17.2 (*)
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.14.2 -> 2.17.2 (*)
+|    \--- org.apache.avro:avro:1.11.3 -> 1.11.4 (*)
++--- project :iceberg-kafka-connect-transforms
+|    +--- org.apache.iceberg:iceberg-bundled-guava:1.5.2
+|    \--- org.mongodb:bson:4.11.0
++--- org.apache.hadoop:hadoop-common:3.3.6
+|    +--- org.apache.hadoop:hadoop-annotations:3.3.6
+|    +--- org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1
+|    +--- commons-cli:commons-cli:1.2
+|    +--- org.apache.commons:commons-math3:3.1.1
+|    +--- org.apache.httpcomponents:httpclient:4.5.13
+|    |    +--- org.apache.httpcomponents:httpcore:4.4.13 -> 4.4.16
+|    |    +--- commons-logging:commons-logging:1.2 -> 1.3.2
+|    |    \--- commons-codec:commons-codec:1.11 -> 1.17.1
+|    +--- commons-codec:commons-codec:1.15 -> 1.17.1
+|    +--- commons-io:commons-io:2.8.0 -> 2.15.1
+|    +--- commons-net:commons-net:3.9.0
+|    +--- commons-collections:commons-collections:3.2.2
+|    +--- javax.servlet:javax.servlet-api:3.1.0
+|    +--- jakarta.activation:jakarta.activation-api:1.2.1
+|    +--- javax.servlet.jsp:jsp-api:2.1
+|    +--- com.sun.jersey:jersey-core:1.19.4
+|    |    \--- javax.ws.rs:jsr311-api:1.1.1
+|    +--- com.sun.jersey:jersey-servlet:1.19.4
+|    |    \--- com.sun.jersey:jersey-server:1.19.4
+|    |         \--- com.sun.jersey:jersey-core:1.19.4 (*)
+|    +--- com.github.pjfanning:jersey-json:1.20
+|    |    +--- org.codehaus.jettison:jettison:1.1 -> 1.5.4
+|    |    +--- com.sun.xml.bind:jaxb-impl:2.2.3-1
+|    |    |    \--- javax.xml.bind:jaxb-api:2.2.2
+|    |    |         \--- javax.xml.stream:stax-api:1.0-2
+|    |    \--- com.sun.jersey:jersey-core:1.19.4 (*)
+|    +--- com.sun.jersey:jersey-server:1.19.4 (*)
+|    +--- commons-logging:commons-logging:1.1.3 -> 1.3.2
+|    +--- commons-beanutils:commons-beanutils:1.9.4
+|    |    +--- commons-logging:commons-logging:1.2 -> 1.3.2
+|    |    \--- commons-collections:commons-collections:3.2.2
+|    +--- org.apache.commons:commons-lang3:3.12.0 -> 3.14.0
+|    +--- org.apache.commons:commons-text:1.10.0
+|    |    \--- org.apache.commons:commons-lang3:3.12.0 -> 3.14.0
+|    +--- com.google.re2j:re2j:1.1 -> 1.8
+|    +--- com.google.code.gson:gson:2.9.0
+|    +--- com.jcraft:jsch:0.1.55
+|    +--- com.google.code.findbugs:jsr305:3.0.2
+|    +--- io.dropwizard.metrics:metrics-core:3.2.4
+|    +--- org.apache.commons:commons-compress:1.21 -> 1.26.0 (*)
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.12.7.1 -> 2.17.2 (*)
+|    +--- org.codehaus.woodstox:stax2-api:4.2.1
+|    +--- com.fasterxml.woodstox:woodstox-core:5.4.0
+|    |    \--- org.codehaus.woodstox:stax2-api:4.2 -> 4.2.1
+|    +--- dnsjava:dnsjava:2.1.7
+|    \--- org.xerial.snappy:snappy-java:1.1.8.2 -> 1.1.10.5
++--- org.apache.iceberg:iceberg-aws:1.5.2
+|    +--- org.apache.iceberg:iceberg-bundled-guava:1.5.2
+|    +--- org.apache.iceberg:iceberg-common:1.5.2 (*)
+|    +--- org.apache.iceberg:iceberg-core:1.5.2 (*)
+|    +--- com.github.ben-manes.caffeine:caffeine:2.9.3 (*)
+|    +--- com.fasterxml.jackson:jackson-bom:2.14.2 -> 2.17.2 (*)
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.14.2 -> 2.17.2 (*)
+|    +--- com.fasterxml.jackson.core:jackson-core:2.14.2 -> 2.17.2 (*)
+|    \--- org.apache.iceberg:iceberg-api:1.5.2 (*)
++--- software.amazon.glue:schema-registry-kafkaconnect-converter:1.1.27
+|    \--- software.amazon.glue:schema-registry-serde:1.1.27
+|         +--- com.amazonaws:aws-java-sdk-sts:1.12.782
+|         |    +--- com.amazonaws:aws-java-sdk-core:1.12.782
+|         |    |    +--- commons-logging:commons-logging:1.1.3 -> 1.3.2
+|         |    |    +--- commons-codec:commons-codec:1.15 -> 1.17.1
+|         |    |    +--- org.apache.httpcomponents:httpclient:4.5.13 (*)
+|         |    |    +--- com.fasterxml.jackson.core:jackson-databind:2.17.2 (*)
+|         |    |    +--- com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.17.2
+|         |    |    |    +--- com.fasterxml.jackson.core:jackson-databind:2.17.2 (*)
+|         |    |    |    +--- com.fasterxml.jackson.core:jackson-core:2.17.2 (*)
+|         |    |    |    \--- com.fasterxml.jackson:jackson-bom:2.17.2 (*)
+|         |    |    \--- joda-time:joda-time:2.12.7
+|         |    \--- com.amazonaws:jmespath-java:1.12.782
+|         |         \--- com.fasterxml.jackson.core:jackson-databind:2.17.2 (*)
+|         +--- software.amazon.awssdk:sts:2.32.25
+|         |    +--- software.amazon.awssdk:aws-query-protocol:2.32.25
+|         |    |    +--- software.amazon.awssdk:protocol-core:2.32.25
+|         |    |    |    +--- software.amazon.awssdk:sdk-core:2.32.25
+|         |    |    |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    +--- software.amazon.awssdk:http-client-spi:2.32.25
+|         |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    |    +--- software.amazon.awssdk:utils:2.32.25
+|         |    |    |    |    |    |    +--- org.reactivestreams:reactive-streams:1.0.4
+|         |    |    |    |    |    |    \--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    |    +--- software.amazon.awssdk:metrics-spi:2.32.25
+|         |    |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    |    |    \--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    |    |    \--- org.reactivestreams:reactive-streams:1.0.4
+|         |    |    |    |    +--- software.amazon.awssdk:metrics-spi:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:endpoints-spi:2.32.25
+|         |    |    |    |    |    \--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    +--- software.amazon.awssdk:http-auth-spi:2.32.25
+|         |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    |    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    |    |    +--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|         |    |    |    |    |    +--- org.reactivestreams:reactive-streams:1.0.4
+|         |    |    |    |    |    \--- software.amazon.awssdk:identity-spi:2.32.25
+|         |    |    |    |    |         +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    |         \--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:http-auth-aws:2.32.25
+|         |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    |    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    |    |    +--- software.amazon.awssdk:identity-spi:2.32.25 (*)
+|         |    |    |    |    |    +--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|         |    |    |    |    |    +--- software.amazon.awssdk:http-auth-spi:2.32.25 (*)
+|         |    |    |    |    |    +--- software.amazon.awssdk:checksums-spi:2.32.25
+|         |    |    |    |    |    |    \--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    |    \--- software.amazon.awssdk:checksums:2.32.25
+|         |    |    |    |    |         +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    |         +--- software.amazon.awssdk:checksums-spi:2.32.25 (*)
+|         |    |    |    |    |         \--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:checksums-spi:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:checksums:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:identity-spi:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:profiles:2.32.25
+|         |    |    |    |    |    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    |    |    \--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    +--- software.amazon.awssdk:retries-spi:2.32.25
+|         |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    |    \--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:retries:2.32.25
+|         |    |    |    |    |    +--- software.amazon.awssdk:retries-spi:2.32.25 (*)
+|         |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    |    \--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    |    \--- org.reactivestreams:reactive-streams:1.0.4
+|         |    |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    \--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:aws-core:2.32.25
+|         |    |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    +--- software.amazon.awssdk:regions:2.32.25
+|         |    |    |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:sdk-core:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:profiles:2.32.25 (*)
+|         |    |    |    |    \--- software.amazon.awssdk:json-utils:2.32.25
+|         |    |    |    |         +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    |         +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |         \--- software.amazon.awssdk:third-party-jackson-core:2.32.25
+|         |    |    |    +--- software.amazon.awssdk:auth:2.32.25
+|         |    |    |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:sdk-core:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:identity-spi:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:regions:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:profiles:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:json-utils:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:http-auth-aws:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:http-auth-aws-eventstream:2.32.25
+|         |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    |    \--- software.amazon.eventstream:eventstream:1.0.1
+|         |    |    |    |    +--- software.amazon.awssdk:http-auth:2.32.25
+|         |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    |    |    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    |    |    +--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|         |    |    |    |    |    +--- software.amazon.awssdk:http-auth-spi:2.32.25 (*)
+|         |    |    |    |    |    \--- software.amazon.awssdk:identity-spi:2.32.25 (*)
+|         |    |    |    |    +--- software.amazon.awssdk:http-auth-spi:2.32.25 (*)
+|         |    |    |    |    \--- software.amazon.eventstream:eventstream:1.0.1
+|         |    |    |    +--- software.amazon.awssdk:http-auth-spi:2.32.25 (*)
+|         |    |    |    +--- software.amazon.awssdk:identity-spi:2.32.25 (*)
+|         |    |    |    +--- software.amazon.awssdk:http-auth:2.32.25 (*)
+|         |    |    |    +--- software.amazon.awssdk:profiles:2.32.25 (*)
+|         |    |    |    +--- software.amazon.awssdk:sdk-core:2.32.25 (*)
+|         |    |    |    +--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|         |    |    |    +--- software.amazon.awssdk:metrics-spi:2.32.25 (*)
+|         |    |    |    +--- software.amazon.awssdk:endpoints-spi:2.32.25 (*)
+|         |    |    |    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    +--- software.amazon.awssdk:retries-spi:2.32.25 (*)
+|         |    |    |    +--- software.amazon.awssdk:retries:2.32.25 (*)
+|         |    |    |    \--- software.amazon.eventstream:eventstream:1.0.1
+|         |    |    +--- software.amazon.awssdk:sdk-core:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    +--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|         |    |    \--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:protocol-core:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:profiles:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:http-auth-aws:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:sdk-core:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:auth:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:http-auth-spi:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:http-auth:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:identity-spi:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:regions:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:aws-core:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:metrics-spi:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:json-utils:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:endpoints-spi:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:retries-spi:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:apache-client:2.32.25
+|         |    |    +--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:metrics-spi:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    +--- org.apache.httpcomponents:httpclient:4.5.13 (*)
+|         |    |    +--- org.apache.httpcomponents:httpcore:4.4.16
+|         |    |    \--- commons-codec:commons-codec:1.17.1
+|         |    \--- software.amazon.awssdk:netty-nio-client:2.32.25
+|         |         +--- software.amazon.awssdk:annotations:2.32.25
+|         |         +--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|         |         +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |         +--- software.amazon.awssdk:metrics-spi:2.32.25 (*)
+|         |         +--- io.netty:netty-codec-http:4.1.124.Final
+|         |         |    +--- io.netty:netty-common:4.1.124.Final
+|         |         |    +--- io.netty:netty-buffer:4.1.124.Final
+|         |         |    |    \--- io.netty:netty-common:4.1.124.Final
+|         |         |    +--- io.netty:netty-transport:4.1.124.Final
+|         |         |    |    +--- io.netty:netty-common:4.1.124.Final
+|         |         |    |    +--- io.netty:netty-buffer:4.1.124.Final (*)
+|         |         |    |    \--- io.netty:netty-resolver:4.1.124.Final
+|         |         |    |         \--- io.netty:netty-common:4.1.124.Final
+|         |         |    +--- io.netty:netty-codec:4.1.124.Final
+|         |         |    |    +--- io.netty:netty-common:4.1.124.Final
+|         |         |    |    +--- io.netty:netty-buffer:4.1.124.Final (*)
+|         |         |    |    \--- io.netty:netty-transport:4.1.124.Final (*)
+|         |         |    \--- io.netty:netty-handler:4.1.124.Final
+|         |         |         +--- io.netty:netty-common:4.1.124.Final
+|         |         |         +--- io.netty:netty-resolver:4.1.124.Final (*)
+|         |         |         +--- io.netty:netty-buffer:4.1.124.Final (*)
+|         |         |         +--- io.netty:netty-transport:4.1.124.Final (*)
+|         |         |         +--- io.netty:netty-transport-native-unix-common:4.1.124.Final
+|         |         |         |    +--- io.netty:netty-common:4.1.124.Final
+|         |         |         |    +--- io.netty:netty-buffer:4.1.124.Final (*)
+|         |         |         |    \--- io.netty:netty-transport:4.1.124.Final (*)
+|         |         |         \--- io.netty:netty-codec:4.1.124.Final (*)
+|         |         +--- io.netty:netty-codec-http2:4.1.124.Final
+|         |         |    +--- io.netty:netty-common:4.1.124.Final
+|         |         |    +--- io.netty:netty-buffer:4.1.124.Final (*)
+|         |         |    +--- io.netty:netty-transport:4.1.124.Final (*)
+|         |         |    +--- io.netty:netty-codec:4.1.124.Final (*)
+|         |         |    +--- io.netty:netty-handler:4.1.124.Final (*)
+|         |         |    \--- io.netty:netty-codec-http:4.1.124.Final (*)
+|         |         +--- io.netty:netty-codec:4.1.124.Final (*)
+|         |         +--- io.netty:netty-transport:4.1.124.Final (*)
+|         |         +--- io.netty:netty-common:4.1.124.Final
+|         |         +--- io.netty:netty-buffer:4.1.124.Final (*)
+|         |         +--- io.netty:netty-handler:4.1.124.Final (*)
+|         |         +--- io.netty:netty-transport-classes-epoll:4.1.124.Final
+|         |         |    +--- io.netty:netty-common:4.1.124.Final
+|         |         |    +--- io.netty:netty-buffer:4.1.124.Final (*)
+|         |         |    +--- io.netty:netty-transport:4.1.124.Final (*)
+|         |         |    \--- io.netty:netty-transport-native-unix-common:4.1.124.Final (*)
+|         |         +--- io.netty:netty-resolver:4.1.124.Final (*)
+|         |         \--- org.reactivestreams:reactive-streams:1.0.4
+|         +--- software.amazon.glue:schema-registry-common:1.1.27
+|         |    +--- software.amazon.awssdk:glue:2.32.25
+|         |    |    +--- software.amazon.awssdk:aws-json-protocol:2.32.25
+|         |    |    |    +--- software.amazon.awssdk:aws-core:2.32.25 (*)
+|         |    |    |    +--- software.amazon.awssdk:protocol-core:2.32.25 (*)
+|         |    |    |    +--- software.amazon.awssdk:sdk-core:2.32.25 (*)
+|         |    |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    |    +--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|         |    |    |    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    |    +--- software.amazon.awssdk:third-party-jackson-core:2.32.25
+|         |    |    |    \--- software.amazon.awssdk:json-utils:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:protocol-core:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:http-auth-aws:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:sdk-core:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:auth:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:http-auth-spi:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:http-auth:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:identity-spi:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:regions:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:aws-core:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:metrics-spi:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:json-utils:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:endpoints-spi:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:retries-spi:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:apache-client:2.32.25 (*)
+|         |    |    \--- software.amazon.awssdk:netty-nio-client:2.32.25 (*)
+|         |    +--- software.amazon.glue:schema-registry-build-tools:1.1.27
+|         |    +--- software.amazon.awssdk:aws-json-protocol:2.32.25 (*)
+|         |    +--- software.amazon.awssdk:url-connection-client:2.32.25
+|         |    |    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|         |    |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    |    \--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|         |    +--- org.apache.avro:avro:1.11.4 (*)
+|         |    +--- com.google.guava:guava:32.0.0-jre -> 32.0.1-jre
+|         |    |    +--- com.google.guava:failureaccess:1.0.1
+|         |    |    +--- com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
+|         |    |    +--- com.google.code.findbugs:jsr305:3.0.2
+|         |    |    +--- org.checkerframework:checker-qual:3.33.0
+|         |    |    +--- com.google.errorprone:error_prone_annotations:2.18.0
+|         |    |    \--- com.google.j2objc:j2objc-annotations:2.8
+|         |    \--- org.apache.commons:commons-lang3:3.8.1 -> 3.14.0
+|         +--- software.amazon.awssdk:arns:2.32.25
+|         |    +--- software.amazon.awssdk:annotations:2.32.25
+|         |    \--- software.amazon.awssdk:utils:2.32.25 (*)
+|         +--- at.yawk.lz4:lz4-java:1.10.2
+|         +--- com.kjetland:mbknor-jackson-jsonschema_2.12:1.0.39
+|         |    +--- org.scala-lang:scala-library:2.12.10
+|         |    +--- org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.3.50 -> 1.9.25
+|         |    |    +--- org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:1.9.25
+|         |    |    |    +--- org.jetbrains.kotlin:kotlin-scripting-common:1.9.25
+|         |    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.9.25 -> 2.0.21
+|         |    |    |    |         +--- org.jetbrains:annotations:13.0 -> 17.0.0
+|         |    |    |    |         +--- org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0 -> 1.9.25 (c)
+|         |    |    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0 -> 1.9.25 (c)
+|         |    |    |    +--- org.jetbrains.kotlin:kotlin-scripting-jvm:1.9.25
+|         |    |    |    |    +--- org.jetbrains.kotlin:kotlin-script-runtime:1.9.25
+|         |    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.9.25 -> 2.0.21 (*)
+|         |    |    |    |    \--- org.jetbrains.kotlin:kotlin-scripting-common:1.9.25 (*)
+|         |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.9.25 -> 2.0.21 (*)
+|         |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.9.25 -> 2.0.21 (*)
+|         |    +--- com.fasterxml.jackson.core:jackson-databind:2.10.1 -> 2.17.2 (*)
+|         |    \--- javax.validation:validation-api:2.0.1.Final
+|         +--- io.github.classgraph:classgraph:4.8.120
+|         +--- com.github.erosb:everit-json-schema:1.14.5
+|         |    +--- org.json:json:20250107
+|         |    +--- commons-validator:commons-validator:1.9.0
+|         |    |    +--- commons-digester:commons-digester:2.1
+|         |    |    \--- commons-logging:commons-logging:1.3.2
+|         |    +--- com.damnhandy:handy-uri-templates:2.1.8
+|         |    |    \--- joda-time:joda-time:2.10.2 -> 2.12.7
+|         |    \--- com.google.re2j:re2j:1.8
+|         +--- com.google.protobuf:protobuf-java:3.25.5
+|         +--- org.jetbrains.kotlin:kotlin-stdlib:1.9.25 -> 2.0.21 (*)
+|         +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25
+|         |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.9.25 -> 2.0.21 (*)
+|         |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25
+|         |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.9.25 -> 2.0.21 (*)
+|         +--- org.jetbrains.kotlin:kotlin-reflect:1.9.25 -> 2.0.10
+|         |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.10 -> 2.0.21 (*)
+|         +--- org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:1.9.25 (*)
+|         +--- org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.9.25 (*)
+|         +--- com.squareup.okio:okio:3.4.0 -> 3.9.1
+|         |    \--- com.squareup.okio:okio-jvm:3.9.1
+|         |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.9.25 -> 2.0.21 (*)
+|         +--- com.squareup.okio:okio-fakefilesystem:3.2.0 -> 3.9.1
+|         |    \--- com.squareup.okio:okio-fakefilesystem-jvm:3.9.1
+|         |         +--- org.jetbrains.kotlinx:kotlinx-datetime:0.6.1
+|         |         |    \--- org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.6.1
+|         |         |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.9.21 -> 2.0.21 (*)
+|         |         +--- com.squareup.okio:okio:3.9.1 (*)
+|         |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.9.25 -> 2.0.21 (*)
+|         +--- org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.4.0 -> 1.7.3
+|         |    +--- org.jetbrains.kotlinx:kotlinx-serialization-bom:1.7.3
+|         |    |    +--- org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.7.3 (c)
+|         |    |    \--- org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.3 (c)
+|         |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.20 -> 2.0.21 (*)
+|         +--- com.squareup.wire:wire-schema:5.2.0
+|         |    \--- com.squareup.wire:wire-schema-jvm:5.2.0
+|         |         +--- com.squareup.okio:okio:3.9.1 (*)
+|         |         +--- com.google.guava:guava:32.0.1-jre (*)
+|         |         +--- com.palantir.javapoet:javapoet:0.6.0
+|         |         +--- com.squareup:kotlinpoet:2.0.0
+|         |         |    \--- com.squareup:kotlinpoet-jvm:2.0.0
+|         |         |         +--- org.jetbrains.kotlin:kotlin-stdlib:2.0.10 -> 2.0.21 (*)
+|         |         |         \--- org.jetbrains.kotlin:kotlin-reflect:2.0.10 (*)
+|         |         +--- com.squareup.wire:wire-runtime:5.2.0
+|         |         |    \--- com.squareup.wire:wire-runtime-jvm:5.2.0
+|         |         |         +--- com.squareup.okio:okio:3.9.1 (*)
+|         |         |         \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 (*)
+|         |         \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 (*)
+|         +--- com.squareup.wire:wire-compiler:5.2.0
+|         |    +--- com.squareup.wire:wire-kotlin-generator:5.2.0
+|         |    |    +--- com.squareup.wire:wire-runtime:5.2.0 (*)
+|         |    |    +--- com.squareup.okio:okio:3.9.1 (*)
+|         |    |    +--- com.squareup.wire:wire-schema:5.2.0 (*)
+|         |    |    +--- com.squareup:kotlinpoet:2.0.0 (*)
+|         |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 (*)
+|         |    +--- com.squareup.wire:wire-java-generator:5.2.0
+|         |    |    +--- com.squareup.wire:wire-runtime:5.2.0 (*)
+|         |    |    +--- com.squareup.okio:okio:3.9.1 (*)
+|         |    |    +--- com.google.guava:guava:32.0.1-jre (*)
+|         |    |    +--- com.squareup.wire:wire-schema:5.2.0 (*)
+|         |    |    +--- com.palantir.javapoet:javapoet:0.6.0
+|         |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 (*)
+|         |    +--- com.squareup.wire:wire-swift-generator:5.2.0
+|         |    |    +--- io.outfoxx:swiftpoet:1.6.5
+|         |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.21 -> 1.9.25 (*)
+|         |    |    |    \--- org.jetbrains.kotlin:kotlin-reflect:1.7.21 -> 2.0.10 (*)
+|         |    |    +--- com.squareup.wire:wire-schema:5.2.0 (*)
+|         |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 (*)
+|         |    +--- com.squareup.okio:okio:3.9.1 (*)
+|         |    +--- com.squareup.okio:okio-fakefilesystem:3.9.1 (*)
+|         |    +--- org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.3
+|         |    |    \--- org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.7.3 (*)
+|         |    +--- com.squareup.wire:wire-schema:5.2.0 (*)
+|         |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 (*)
+|         +--- com.google.api.grpc:proto-google-common-protos:2.7.4
+|         |    \--- com.google.protobuf:protobuf-java:3.19.4 -> 3.25.5
+|         +--- com.google.jimfs:jimfs:1.1
+|         |    \--- com.google.guava:guava:18.0 -> 32.0.1-jre (*)
+|         \--- org.apache.commons:commons-collections4:4.4
++--- software.amazon.awssdk:bom:2.32.25
+|    +--- software.amazon.awssdk:apache-client:2.32.25 (c)
+|    +--- software.amazon.awssdk:url-connection-client:2.32.25 (c)
+|    +--- software.amazon.awssdk:dynamodb:2.32.25 (c)
+|    +--- software.amazon.awssdk:glue:2.32.25 (c)
+|    +--- software.amazon.awssdk:kms:2.32.25 (c)
+|    +--- software.amazon.awssdk:s3:2.32.25 (c)
+|    +--- software.amazon.awssdk:sts:2.32.25 (c)
+|    +--- software.amazon.awssdk:http-client-spi:2.32.25 (c)
+|    +--- software.amazon.awssdk:metrics-spi:2.32.25 (c)
+|    +--- software.amazon.awssdk:utils:2.32.25 (c)
+|    +--- software.amazon.awssdk:annotations:2.32.25 (c)
+|    +--- software.amazon.awssdk:aws-json-protocol:2.32.25 (c)
+|    +--- software.amazon.awssdk:protocol-core:2.32.25 (c)
+|    +--- software.amazon.awssdk:profiles:2.32.25 (c)
+|    +--- software.amazon.awssdk:retries-spi:2.32.25 (c)
+|    +--- software.amazon.awssdk:http-auth-aws:2.32.25 (c)
+|    +--- software.amazon.awssdk:sdk-core:2.32.25 (c)
+|    +--- software.amazon.awssdk:auth:2.32.25 (c)
+|    +--- software.amazon.awssdk:http-auth-spi:2.32.25 (c)
+|    +--- software.amazon.awssdk:http-auth:2.32.25 (c)
+|    +--- software.amazon.awssdk:identity-spi:2.32.25 (c)
+|    +--- software.amazon.awssdk:regions:2.32.25 (c)
+|    +--- software.amazon.awssdk:aws-core:2.32.25 (c)
+|    +--- software.amazon.awssdk:json-utils:2.32.25 (c)
+|    +--- software.amazon.awssdk:endpoints-spi:2.32.25 (c)
+|    +--- software.amazon.awssdk:netty-nio-client:2.32.25 (c)
+|    +--- software.amazon.awssdk:aws-xml-protocol:2.32.25 (c)
+|    +--- software.amazon.awssdk:arns:2.32.25 (c)
+|    +--- software.amazon.awssdk:checksums:2.32.25 (c)
+|    +--- software.amazon.awssdk:checksums-spi:2.32.25 (c)
+|    +--- software.amazon.awssdk:aws-query-protocol:2.32.25 (c)
+|    +--- software.amazon.awssdk:third-party-jackson-core:2.32.25 (c)
+|    +--- software.amazon.awssdk:retries:2.32.25 (c)
+|    \--- software.amazon.awssdk:http-auth-aws-eventstream:2.32.25 (c)
++--- software.amazon.awssdk:s3 -> 2.32.25
+|    +--- software.amazon.awssdk:aws-xml-protocol:2.32.25
+|    |    +--- software.amazon.awssdk:aws-query-protocol:2.32.25 (*)
+|    |    +--- software.amazon.awssdk:protocol-core:2.32.25 (*)
+|    |    +--- software.amazon.awssdk:aws-core:2.32.25 (*)
+|    |    +--- software.amazon.awssdk:sdk-core:2.32.25 (*)
+|    |    +--- software.amazon.awssdk:annotations:2.32.25
+|    |    +--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|    |    \--- software.amazon.awssdk:utils:2.32.25 (*)
+|    +--- software.amazon.awssdk:protocol-core:2.32.25 (*)
+|    +--- software.amazon.awssdk:arns:2.32.25 (*)
+|    +--- software.amazon.awssdk:profiles:2.32.25 (*)
+|    +--- software.amazon.awssdk:crt-core:2.32.25
+|    |    +--- software.amazon.awssdk:annotations:2.32.25
+|    |    \--- software.amazon.awssdk:utils:2.32.25 (*)
+|    +--- software.amazon.awssdk:http-auth:2.32.25 (*)
+|    +--- software.amazon.awssdk:identity-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:http-auth-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:http-auth-aws:2.32.25 (*)
+|    +--- software.amazon.awssdk:checksums:2.32.25 (*)
+|    +--- software.amazon.awssdk:checksums-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:retries-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:sdk-core:2.32.25 (*)
+|    +--- software.amazon.awssdk:auth:2.32.25 (*)
+|    +--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:regions:2.32.25 (*)
+|    +--- software.amazon.awssdk:annotations:2.32.25
+|    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|    +--- software.amazon.awssdk:aws-core:2.32.25 (*)
+|    +--- software.amazon.awssdk:metrics-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:json-utils:2.32.25 (*)
+|    +--- software.amazon.awssdk:endpoints-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:apache-client:2.32.25 (*)
+|    \--- software.amazon.awssdk:netty-nio-client:2.32.25 (*)
++--- software.amazon.awssdk:glue -> 2.32.25 (*)
++--- software.amazon.awssdk:sts -> 2.32.25 (*)
++--- software.amazon.awssdk:kms -> 2.32.25
+|    +--- software.amazon.awssdk:aws-json-protocol:2.32.25 (*)
+|    +--- software.amazon.awssdk:protocol-core:2.32.25 (*)
+|    +--- software.amazon.awssdk:http-auth-aws:2.32.25 (*)
+|    +--- software.amazon.awssdk:sdk-core:2.32.25 (*)
+|    +--- software.amazon.awssdk:auth:2.32.25 (*)
+|    +--- software.amazon.awssdk:http-auth-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:http-auth:2.32.25 (*)
+|    +--- software.amazon.awssdk:identity-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:regions:2.32.25 (*)
+|    +--- software.amazon.awssdk:annotations:2.32.25
+|    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|    +--- software.amazon.awssdk:aws-core:2.32.25 (*)
+|    +--- software.amazon.awssdk:metrics-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:json-utils:2.32.25 (*)
+|    +--- software.amazon.awssdk:endpoints-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:retries-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:apache-client:2.32.25 (*)
+|    \--- software.amazon.awssdk:netty-nio-client:2.32.25 (*)
++--- software.amazon.awssdk:dynamodb -> 2.32.25
+|    +--- software.amazon.awssdk:aws-json-protocol:2.32.25 (*)
+|    +--- software.amazon.awssdk:protocol-core:2.32.25 (*)
+|    +--- software.amazon.awssdk:profiles:2.32.25 (*)
+|    +--- software.amazon.awssdk:retries-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:http-auth-aws:2.32.25 (*)
+|    +--- software.amazon.awssdk:sdk-core:2.32.25 (*)
+|    +--- software.amazon.awssdk:auth:2.32.25 (*)
+|    +--- software.amazon.awssdk:http-auth-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:http-auth:2.32.25 (*)
+|    +--- software.amazon.awssdk:identity-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:http-client-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:regions:2.32.25 (*)
+|    +--- software.amazon.awssdk:annotations:2.32.25
+|    +--- software.amazon.awssdk:utils:2.32.25 (*)
+|    +--- software.amazon.awssdk:aws-core:2.32.25 (*)
+|    +--- software.amazon.awssdk:metrics-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:json-utils:2.32.25 (*)
+|    +--- software.amazon.awssdk:endpoints-spi:2.32.25 (*)
+|    +--- software.amazon.awssdk:apache-client:2.32.25 (*)
+|    \--- software.amazon.awssdk:netty-nio-client:2.32.25 (*)
++--- software.amazon.awssdk:apache-client -> 2.32.25 (*)
+\--- software.amazon.awssdk:url-connection-client -> 2.32.25 (*)
+
+(c) - A dependency constraint, not a dependency. The dependency affected by the constraint occurs elsewhere in the tree.
+(*) - Indicates repeated occurrences of a transitive dependency subtree. Gradle expands transitive dependency subtrees only once per project; repeat occurrences only display the root of the subtree, followed by this annotation.
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+BUILD SUCCESSFUL in 4s
+1 actionable task: 1 executed
